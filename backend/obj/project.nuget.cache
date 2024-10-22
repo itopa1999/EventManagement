@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "+v1TjArA53c=",
+  "dgSpecHash": "sdG8CLL4NhI=",
   "success": true,
   "projectFilePath": "C:\\Users\\FMY-381\\Desktop\\projects\\EventManagement\\backend\\backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\FMY-381\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\FMY-381\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
+    "C:\\Users\\FMY-381\\.nuget\\packages\\csvhelper\\33.0.1\\csvhelper.33.0.1.nupkg.sha512",
+    "C:\\Users\\FMY-381\\.nuget\\packages\\exceldatareader\\3.7.0\\exceldatareader.3.7.0.nupkg.sha512",
     "C:\\Users\\FMY-381\\.nuget\\packages\\hangfire\\1.8.14\\hangfire.1.8.14.nupkg.sha512",
     "C:\\Users\\FMY-381\\.nuget\\packages\\hangfire.aspnetcore\\1.8.14\\hangfire.aspnetcore.1.8.14.nupkg.sha512",
     "C:\\Users\\FMY-381\\.nuget\\packages\\hangfire.core\\1.8.14\\hangfire.core.1.8.14.nupkg.sha512",
