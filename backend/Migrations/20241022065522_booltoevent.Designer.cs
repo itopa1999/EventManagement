@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Data;
 
@@ -11,9 +12,11 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20241022065522_booltoevent")]
+    partial class booltoevent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,19 +54,19 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "7c8f7705-d510-4428-a571-a87d01d3a591",
+                            Id = "bee889c7-ef98-4c2e-adba-91f565a55c22",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "ca5e5e82-58c7-46e3-8846-e22866d8dc74",
+                            Id = "f09e2248-ef84-408c-b7d5-b27afa3245eb",
                             Name = "Organizer",
                             NormalizedName = "ORGANIZER"
                         },
                         new
                         {
-                            Id = "e506c86c-4d72-4a4a-9a35-841981f7dada",
+                            Id = "f278d014-2fdb-4901-b098-4c1fa89407ae",
                             Name = "Attendee",
                             NormalizedName = "ATTENDEE"
                         });
@@ -467,9 +470,6 @@ namespace backend.Migrations
 
                     b.Property<int>("EventId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("HasSent")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("ReminderTime")
                         .HasColumnType("datetime2");

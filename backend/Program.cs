@@ -131,6 +131,7 @@ builder.Services.AddHangfireServer();
 
 builder.Services.AddScoped<IJWTService, JWTServices>();
 builder.Services.AddScoped<IAuthInterface, IAuthRepository>();
+builder.Services.AddScoped<IOrganizerInterfaces, OrganizerRepository>();
 
 
 

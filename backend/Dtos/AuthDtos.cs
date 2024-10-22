@@ -7,31 +7,19 @@ namespace backend.Dtos
 {
     public class CreateAdminDto
     {
-        [JsonPropertyName("username")]
         public string? Username { get; set; }
-        [JsonPropertyName("email_address")]
         public string? Email { get; set; }
-        [JsonPropertyName("first_name")]
+        public string? Phone { get; set; }
         public string? FirstName { get; set; }
-        [JsonPropertyName("last_name")]
         public string? LastName { get; set; }
-        [JsonPropertyName("other_name")]
         public string? OtherName { get; set; }
-        [JsonPropertyName("state")]
         public string? State { get; set; }
-        [JsonPropertyName("lga")]
         public string? LGA { get; set; }
-        [JsonPropertyName("address")]
         public string? Address { get; set; }
-        [JsonPropertyName("gender")]
         public string? Gender { get; set; }
-        [JsonPropertyName("security_question")]
         public string? SecurityQuestion { get; set; }
-        [JsonPropertyName("security_answer")]
         public string? SecurityAnswer { get; set; }
-        [JsonPropertyName("user_type")]
         public UserType UserType { get; set; } 
-        [JsonPropertyName("password")]
         public string? Password { get; set; }
 
     }
@@ -42,6 +30,41 @@ namespace backend.Dtos
         public int Token { get; set; }
 
     }
+
+    public class ResendOtpDto
+    {
+        public string? Email { get; set; }
+
+    }
+
+    public class ForgotPasswordDto
+    {
+        public string? Email { get; set; }
+        public string? Question { get; set; }
+        public string? Answer { get; set; }
+
+    }
+
+    public class ResetPasswordDto
+    {
+        public string? Email { get; set; }
+        public string? Password1 { get; set; }
+        public string? Password2 { get; set; }
+    }
+
+    public class UserLoginDto
+    {
+        public string? Username { get; set; }
+        public string? Password { get; set; }
+
+    }
+
+    public class StateDto
+{
+    public int Id { get; set; }
+    public string? Name { get; set; }
+    public List<string>? LGAs { get; set; }
+}
 
 
 }

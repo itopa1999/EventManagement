@@ -11,7 +11,11 @@ namespace backend.Interface
     
     public interface IAuthInterface
     {
-        Task<User> CreateAdminUserAsync (CreateAdminDto createAdmin);
-        // Task<string> VerifyOtpAsync (VerifyOtpDto verifyOtp);
+        Task<(string message, User? user)> CreateAdminUserAsync(CreateAdminDto createAdmin);
+        Task<(string message, bool isSuccess)> VerifyOtpAsync (VerifyOtpDto verifyOtp);
+        Task<(string message, bool isSuccess)> ResendOtpAsync (ResendOtpDto resendOtp);
+        Task<(string message, bool isSuccess)> ForgotPasswordAsync (ForgotPasswordDto forgotPasswordDto);
+        Task<(string message, bool isSuccess)> ResetPasswordAsync (ResetPasswordDto resetPasswordDto);
+        Task<(string message, User? user)> LoginUserAsync (UserLoginDto loginDto);
     }
-}
+}   

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Data;
 
@@ -11,9 +12,11 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20241021221627_state")]
+    partial class state
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,19 +54,19 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "7c8f7705-d510-4428-a571-a87d01d3a591",
+                            Id = "48a952c5-e0f9-4638-8e38-adc6ec0d2f4f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "ca5e5e82-58c7-46e3-8846-e22866d8dc74",
+                            Id = "e9c2c398-4d19-49d2-a709-24681b0d2a2a",
                             Name = "Organizer",
                             NormalizedName = "ORGANIZER"
                         },
                         new
                         {
-                            Id = "e506c86c-4d72-4a4a-9a35-841981f7dada",
+                            Id = "eedec756-2bb8-457e-9bc9-c329a8ada1d7",
                             Name = "Attendee",
                             NormalizedName = "ATTENDEE"
                         });
@@ -230,12 +233,6 @@ namespace backend.Migrations
 
                     b.Property<int>("EventType")
                         .HasColumnType("int");
-
-                    b.Property<bool>("HasPayment")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsInvitationOnly")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
@@ -467,9 +464,6 @@ namespace backend.Migrations
 
                     b.Property<int>("EventId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("HasSent")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("ReminderTime")
                         .HasColumnType("datetime2");

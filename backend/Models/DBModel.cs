@@ -44,10 +44,14 @@ namespace backend.Models
     {
         public int Id { get; set; }
         public string? Name { get; set; }
+        public EventType EventType { get; set; }
+        public string? State { get; set; }
         public string? Location { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string? Description { get; set; }
+        public bool IsInvitationOnly  { get; set; } = false;
+        public bool HasPayment { get; set; } = false;
         public string? OrganizerId { get; set; } // Foreign key to User
         public User? Organizer { get; set; } // Navigation property
         public int? TemplateId { get; set; } // Foreign key for EventTemplate
@@ -140,7 +144,7 @@ namespace backend.Models
         public string? AttendeeEmail { get; set; }
         public DateTime SentAt { get; set; }
         public InvitationStatus? Status { get; set; } // Enum to track invitation status
-
+        
         // Navigation property
         public Event? Event { get; set; }
     }
@@ -149,9 +153,9 @@ namespace backend.Models
     {
         public int Id { get; set; }
         public int EventId { get; set; } // FK to Event
-        public DateTime ReminderTime { get; set; } // When to send the reminder
-        public ReminderType Type { get; set; } // Enum to specify the type of reminder
-
+        public DateTime ReminderTime { get; set; }
+        public ReminderType Type { get; set; }
+        public bool HasSent { get; set; } = false;
         // Navigation property
         public Event? Event { get; set; }
     }

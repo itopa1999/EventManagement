@@ -8,7 +8,7 @@ namespace backend.Helpers
     {
         [JsonProperty("error_description")]
         [JsonPropertyName("error_description")]
-        public string ErrorDescription { get; set; } = "An error  occurred, try again later.";
+        public string ErrorDescription { get; set; } = "successful";
 
         public static ErrorResponse GetModelStateErrors(ValueEnumerable errors)
         {
