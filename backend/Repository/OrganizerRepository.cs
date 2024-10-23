@@ -10,6 +10,7 @@ using backend.Helpers;
 using backend.Interface;
 using backend.Mappers;
 using backend.Models;
+using backend.Services;
 using CsvHelper;
 using ExcelDataReader;
 using Microsoft.EntityFrameworkCore;
@@ -139,9 +140,8 @@ namespace backend.Repository
                     }
                 }
             }
-            var existingEvent = await _context.Events.FirstOrDefaultAsync(x=>x.Id == id
-             && x.OrganizerId == userId);
-            if (existingEvent == null)
+
+            if (!await id.IsValidEvent(userId, _context))
                 return ($"Event with Id: {id} doesn't exists.", null);
             var existingEventSession = await _context.Sessions.FirstOrDefaultAsync(x=>x.Title == createEventSessionDto.Title
             && x.EventId == id && x.Event.OrganizerId == userId);
@@ -179,9 +179,7 @@ namespace backend.Repository
             {
                 return ($"Invalid email {createEventIvDto.AttendeeEmail}", null);
             }
-            var existingEvent = await _context.Events.FirstOrDefaultAsync(x=>x.Id == id
-             && x.OrganizerId == userId);
-            if (existingEvent == null)
+            if (!await id.IsValidEvent(userId, _context))
                 return ($"Event with Id: {id} doesn't exists.", null);
             var existingEventIv = await _context.Invitations.FirstOrDefaultAsync(x=>x.AttendeeEmail == createEventIvDto.AttendeeEmail
             && x.EventId == id && x.Event.OrganizerId == userId);
@@ -203,9 +201,7 @@ namespace backend.Repository
         {
             if (file == null || file.Length == 0)
             return ("No file uploaded.", false);
-            var existingEvent = await _context.Events.FirstOrDefaultAsync(x=>x.Id == id
-            && x.OrganizerId == userId);
-            if (existingEvent == null)
+            if (!await id.IsValidEvent(userId, _context))
                 return ($"Event with Id: {id} doesn't exists.", false);
             List<CreateEventIvDto> eventIvs = new List<CreateEventIvDto>();
             var extension = Path.GetExtension(file.FileName).ToLower();
@@ -350,9 +346,7 @@ namespace backend.Repository
                 }
             }
 
-            var existingEvent = await _context.Events.FirstOrDefaultAsync(x=>x.Id == id
-             && x.OrganizerId == userId);
-            if (existingEvent == null)
+            if (!await id.IsValidEvent(userId, _context))
                 return ($"Event with Id: {id} doesn't exists.", null);
             var existingEventReminder = await _context.Reminders.FirstOrDefaultAsync(x=>x.ReminderTime == eventReminderDto.ReminderTime
             && x.EventId == id && x.Event.OrganizerId == userId && x.Type == eventReminderDto.Type);
@@ -382,11 +376,9 @@ namespace backend.Repository
                     }
                 }
             }
-
-            var existingEvent = await _context.Events.FirstOrDefaultAsync(x=>x.Id == id
-             && x.OrganizerId == userId);
-            if (existingEvent == null)
+            if (!await id.IsValidEvent(userId, _context))
                 return ($"Event with Id: {id} doesn't exists.", null);
+            var existingEvent = await _context.Events.FindAsync(id);
             existingEvent.Name = updateEventDto.Name;
             existingEvent.EventType = updateEventDto.EventType;
             existingEvent.State = updateEventDto.State;
@@ -399,5 +391,154 @@ namespace backend.Repository
             await _context.SaveChangesAsync();
             return ($"{existingEvent.Name} has been updated successfully", existingEvent);
         }
+
+        public async Task<(string message, bool IsSuccess)> DeleteEventAsync(int id, string userId)
+        {
+            if (!await id.IsValidEvent(userId, _context))
+                return ($"Event with Id: {id} doesn't exists.", false);
+            var existingEvent = await _context.Events.FindAsync(id);
+            
+             _context.Events.Remove(existingEvent);
+             await _context.SaveChangesAsync();
+             return ($"Event Deleted successfully", true);
+        }
+
+        public async Task<(OrganizerEventDetailsDto? eventDetailsDto, bool IsSuccess)> GetEventDetailsAsync(int id, string userId)
+        {
+            if (!await id.IsValidEvent(userId, _context))
+                return (null, false);
+            var existingEvent = await _context.Events
+            .Include(x=>x.Sessions)
+            .Include(x=>x.Reminders)
+            .FirstOrDefaultAsync(x=>x.Id == id);
+
+            var eventDetailsDto = existingEvent?.ToOrganizerEventDetailsDto();
+            return (eventDetailsDto, true);
+            
+        }
+
+        public async Task<(string message, Session? session)> UpdateEventSessionAsync(UpdateEventSessionDto eventSessionDto, int id, int eventId, string userId)
+        {
+            var properties = typeof(UpdateEventSessionDto).GetProperties();
+            foreach (var property in properties)
+            {
+                if (property.PropertyType == typeof(string))
+                {
+                    var value = (string?)property.GetValue(eventSessionDto);
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        return ($"{property.Name} cannot be empty.", null);
+                    }
+                }
+            }
+            if (!await id.IsValidEventSession(eventId, userId, _context))
+                return ($"EventSession doesn't exists.", null);
+            var existingEventSession = await _context.Sessions.FindAsync(id);
+            existingEventSession.Title = eventSessionDto.Title;
+            existingEventSession.StartTime = eventSessionDto.StartTime;
+            existingEventSession.EndTime = eventSessionDto.EndTime;
+            existingEventSession.Speaker = eventSessionDto.Speaker;
+            await _context.SaveChangesAsync();
+            return ($"Successfully updated {existingEventSession.Title} for Event: {existingEventSession.Event?.Name}", existingEventSession);
+        }
+
+       public async Task<(string message, bool IsSuccess)> DeleteEventSessionAsync(int id, int eventId, string userId)
+        {
+            if (!await id.IsValidEventSession(eventId, userId, _context))
+                return ($"EventSession doesn't exists.", false);
+            var existingEventSession = await _context.Sessions.FindAsync(id);
+            _context.Sessions.Remove(existingEventSession);
+            await _context.SaveChangesAsync();
+            return ($"EventSession Deleted successfully", true);
+
+        }
+
+        public async Task<(string message, Invitation? invitation)> UpdateEventInvitationAsync(UpdateEventIvDto updateEventIvDto, int id, int eventId, string userId)
+        {
+            var properties = typeof(UpdateEventIvDto).GetProperties();
+            foreach (var property in properties)
+            {
+                if (property.PropertyType == typeof(string))
+                {
+                    var value = (string?)property.GetValue(updateEventIvDto);
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        return ($"{property.Name} cannot be empty.", null);
+                    }
+                }
+            }
+            if (!await id.IsValidEventInvitation(eventId, userId, _context))
+                return ($"EventInvitation doesn't exists.", null);
+                var existingEventIV = await _context.Invitations.FindAsync(id);
+                existingEventIV.AttendeeEmail = updateEventIvDto.AttendeeEmail;
+                existingEventIV.SentAt = updateEventIvDto.SentAt;
+                await _context.SaveChangesAsync();
+                return ($"Successfully updated {existingEventIV.AttendeeEmail} for Event: {existingEventIV.Event?.Name}", existingEventIV);
+
+
+        }
+
+        public async Task<(List<OrganizerInvitationListDto>? invitationListDto, bool IsSuccess)> GetEventIvDetailsAsync(int id, string userId)
+        {
+            if (!await id.IsValidEvent(userId, _context))
+                return (null, false);
+            var invitations =await _context.Invitations
+            .Where(x=>x.EventId == id)
+            .ToListAsync();
+
+            var invitationDto = invitations?.Select(x=>x.ToOrganizerInvitationListDto()).ToList();
+
+            return (invitationDto, true);
+
+            
+        }
+
+        public async Task<(string message, bool IsSuccess)> DeleteEventIvAsync(int id, int eventId, string userId)
+        {
+            if (!await id.IsValidEventInvitation(eventId, userId, _context))
+                return ($"EventInvitation doesn't exists.", false);
+            var existingEventIv = await _context.Invitations.FindAsync(id);
+            _context.Invitations.Remove(existingEventIv);
+            await _context.SaveChangesAsync();
+            return ($"EventInvitation Deleted successfully", true);
+
+        
+        }
+
+        public async Task<(string message, Reminder? reminder)> UpdateEventReminderAsync(UpdateEventReminderDto eventReminderDto, int id, int eventId, string userId)
+        {
+            var properties = typeof(UpdateEventReminderDto).GetProperties();
+            foreach (var property in properties)
+            {
+                if (property.PropertyType == typeof(string))
+                {
+                    var value = (string?)property.GetValue(eventReminderDto);
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        return ($"{property.Name} cannot be empty.", null);
+                    }
+                }
+            }
+            if (!await id.IsValidEventReminder(eventId, userId, _context))
+                return ($"EventReminder doesn't exists.", null);
+            var existingEventReminder = await _context.Reminders.FindAsync(id);
+            existingEventReminder.Type = eventReminderDto.Type;
+            existingEventReminder.ReminderTime = eventReminderDto.ReminderTime;
+            await _context.SaveChangesAsync();
+            return ($"Successfully updated Reminder for Event: {existingEventReminder.Event?.Name}", existingEventReminder);
+
+        }
+
+        public async Task<(string message, bool IsSuccess)> DeleteEventReminderAsync(int id, int eventId, string userId)
+        {
+            if (!await id.IsValidEventReminder(eventId, userId, _context))
+                return ($"EventReminder doesn't exists.", false);
+            var existingEventReminder = await _context.Reminders.FindAsync(id);
+            _context.Reminders.Remove(existingEventReminder);
+            await _context.SaveChangesAsync();
+            return ($"EventReminder Deleted successfully", true);
+        }
+
+    
     }
 }
