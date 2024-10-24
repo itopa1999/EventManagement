@@ -150,7 +150,7 @@ namespace backend.Models
         // Navigation property
         public Event? Event { get; set; }
     }
-
+ 
     public class Reminder
     {
         public int Id { get; set; }
