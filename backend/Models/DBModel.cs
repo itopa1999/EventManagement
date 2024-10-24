@@ -18,8 +18,7 @@ namespace backend.Models
         public string? Gender { get; set; }
         public UserType UserType { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-
-
+        public bool IsBlock { get; set; } = false;
         public ICollection<Event>? Events { get; set; }
         public string? OtpId { get; set; }
         public Otp? Otp { get; set; }
@@ -65,6 +64,7 @@ namespace backend.Models
         public ICollection<Reminder>? Reminders { get; set; } = new List<Reminder>();// Related Reminders
         public ICollection<Feedback>? Feedbacks { get; set; } = new List<Feedback>();// Related Feedbacks
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public bool IsBlock { get; set; } = false;
     }
 
 
@@ -106,6 +106,7 @@ namespace backend.Models
         public ICollection<Ticket>? Tickets { get; set; } = new List<Ticket>();// Related Tickets
         public string? QRCode { get; set; } // QR Code string for check-in
         public DateTime RegisteredAt { get; set; } = DateTime.Now; // Date and time of registration
+        public bool IsBlock { get; set; } = false;
     }
 
 
@@ -196,6 +197,7 @@ namespace backend.Models
         public string? UserId { get; set; }
         public decimal Balance { get; set; } = 0;
         public User? User { get; set; }
+        public bool IsBlock { get; set; } = false;
     }
 
     public class Transaction

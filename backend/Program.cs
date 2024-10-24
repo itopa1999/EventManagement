@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
+using backend.AdminRepository;
 using backend.Data;
-using backend.Helpers.Middlewares;
+using backend.Dtos;
+using backend.Helpers;
 using backend.Interface;
 using backend.Models;
 using backend.Repository;
@@ -141,7 +143,12 @@ builder.Services.AddScoped<IJWTService, JWTServices>();
 builder.Services.AddScoped<IAuthInterface, IAuthRepository>();
 builder.Services.AddScoped<IOrganizerInterfaces, OrganizerRepository>();
 builder.Services.AddScoped<IAttendeeInterface, AttendeeRepository>();
+builder.Services.AddScoped<IAdminInterface, AdminRepository>();
 builder.Services.AddHttpClient<FlutterwaveService>();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.Configure<SmtpSettingsDto>(builder.Configuration.GetSection("Smtp"));
+builder.Services.AddTransient<EmailService>();
 
 
 builder.Services.AddCors(options =>
@@ -186,7 +193,7 @@ app.Use(async (context, next) =>
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseMiddleware<BlockAllUserMiddleware>();
 
 app.MapControllers();
 

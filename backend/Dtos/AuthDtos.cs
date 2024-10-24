@@ -60,11 +60,22 @@ namespace backend.Dtos
     }
 
     public class StateDto
-{
-    public int Id { get; set; }
-    public string? Name { get; set; }
-    public List<string>? LGAs { get; set; }
-}
+    {
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public List<string>? LGAs { get; set; }
+    }
+
+
+    public class SmtpSettingsDto
+    {
+        public string? Host { get; set; }
+        public int Port { get; set; }
+        public bool EnableSsl { get; set; }
+        public string? FromEmail { get; set; }
+        public string? FromPassword { get; set; }
+    }
+
 
 
 }

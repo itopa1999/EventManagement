@@ -51,19 +51,19 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "09c6f900-be35-495d-8408-1db9d6c985c6",
+                            Id = "b6ab04cc-44d3-45a8-91af-579fb78bdc7a",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "d7f34907-b481-4283-9719-534c99ad8be0",
+                            Id = "93c8b955-d7c5-4af4-9ecc-76de944f2f8b",
                             Name = "Organizer",
                             NormalizedName = "ORGANIZER"
                         },
                         new
                         {
-                            Id = "8f1a0a19-498b-4168-9595-8c7e091be687",
+                            Id = "d6053f05-6bff-4346-a56b-c9a5b302ac6a",
                             Name = "Attendee",
                             NormalizedName = "ATTENDEE"
                         });
@@ -192,6 +192,9 @@ namespace backend.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsBlock")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
@@ -232,6 +235,9 @@ namespace backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("HasPayment")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsBlock")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsInvitationOnly")
@@ -612,6 +618,9 @@ namespace backend.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsBlock")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LGA")
                         .HasColumnType("nvarchar(max)");
 
@@ -695,6 +704,9 @@ namespace backend.Migrations
 
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsBlock")
+                        .HasColumnType("bit");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");

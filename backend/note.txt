@@ -18,6 +18,7 @@ dotnet add package Serilog.AspNetCore
 dotnet add package Serilog.Sinks.File
 dotnet add package Hangfire
 dotnet add package Hangfire.SqlServer
+dotnet add package Hangfire.AspNetCore
 dotnet add package QRCoder
 
 
@@ -34,9 +35,9 @@ dotnet add package CsvHelper
 
 dotnet ef database update
 dotnet ef migrations add init
-dotnet nuget locals all --clear
-
-
+dotnet list package
+dotnet run --launch-profile https
+dotnet dev-certs https --trust
 
 
 TODO 

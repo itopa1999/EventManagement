@@ -47,7 +47,7 @@ namespace backend.Services
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
             var tokenDescriptor = new SecurityTokenDescriptor{
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(60),
+                Expires = DateTime.UtcNow.AddDays(5),
                 NotBefore = DateTime.UtcNow,
                 SigningCredentials = creds,
                 Issuer = _config["JWT:Issuer"],

@@ -16,24 +16,20 @@ namespace backend.Controllers
     {
         public readonly DBContext _context;
         public readonly UserManager<User> _userManager;
-        public readonly SignInManager<User> _signInManager;
-        public readonly IJWTService _token;
         public readonly IAdminInterface _adminRepo;
 
         public AdminController(
-             DBContext context,
-            SignInManager<User> signInManager,
+            DBContext context,
             UserManager<User> userManager,
-            IJWTService token,
             IAdminInterface adminRepo
         )
         {
             _context = context;
-            _signInManager = signInManager;
             _userManager = userManager;
-            _token = token;
             _adminRepo = adminRepo;
         }
+
+        
 
  
 

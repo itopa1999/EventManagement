@@ -16,17 +16,20 @@ namespace backend.Repository
         private readonly FlutterwaveService _flutterRepo;
         private readonly string _secretKey;
         private readonly HttpClient _httpClient;
+        private readonly EmailService _emailService;
         public AttendeeRepository(
             DBContext context,
             FlutterwaveService flutterRepo,
             IConfiguration config,
-            HttpClient httpClient
+            HttpClient httpClient,
+            EmailService emailService
         )
         {
             _context = context;
             _flutterRepo = flutterRepo;
             _secretKey = config["Flutter:Secret_key"];
             _httpClient = httpClient;
+            _emailService = emailService;
         }
 
         
@@ -80,6 +83,11 @@ namespace backend.Repository
             };
             await _context.Attendees.AddAsync(attendeeModel);
             await _context.SaveChangesAsync();
+
+            // var subject = "Welcome!";
+            // var body = "This is a test email sent to the logged-in user.";
+            // var email = "salawulucky08071@gmail.com";
+            // await _emailService.SendEmailAsync(email, subject, body);
 
             return ($"Attendee registered successfully for event id: {eventId}", attendeeModel);
         }

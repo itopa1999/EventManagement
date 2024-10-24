@@ -114,4 +114,17 @@ namespace backend.Helpers
     }
 
 
+    public enum AdminActionStatusCode
+    {
+        BlockAllOrganizers = 1000,
+        BlockOrganizer = 2000,
+        BlockAllOrganizersWallet = 3000,
+        BlockOrganizerWallet = 4000,
+        BlockAllEvents = 5000,
+        BlockEvent = 6000,
+        BlockAllAttendees = 1000,
+        BlockAttendee = 1000,
+    }
+
+
 }
