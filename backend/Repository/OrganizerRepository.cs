@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Threading.Tasks;
 using backend.Data;
 using backend.Dtos;
 using backend.Helpers;
@@ -13,6 +7,7 @@ using backend.Models;
 using backend.Services;
 using CsvHelper;
 using ExcelDataReader;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repository
@@ -104,7 +99,14 @@ namespace backend.Repository
                     HasPayment = createEventDto.HasPayment,
                     IsInvitationOnly = createEventDto.IsInvitationOnly
                 };
+                if (eventModel.HasPayment && createEventDto.Price <= 0)
+                {
+                    return ($"Amount cannot be 0.00 when 'HasPayment' is true", null);
+                }
+                eventModel.TicketType = eventModel.HasPayment ? TicketType.Paid : TicketType.Free;
+                eventModel.Price = createEventDto.Price;
                 await _context.Events.AddAsync(eventModel);
+                
             var checkEventTemplateExists = await _context.EventTemplates.FirstOrDefaultAsync(x=>x.Events.Any(e => e.OrganizerId == userId)
             && x.EventType == createEventDto.EventType || x.Name == createEventDto.Name);
             if (checkEventTemplateExists == null){
@@ -388,6 +390,10 @@ namespace backend.Repository
             existingEvent.Description = updateEventDto.Description;
             existingEvent.HasPayment = updateEventDto.HasPayment;
             existingEvent.IsInvitationOnly = updateEventDto.IsInvitationOnly;
+            existingEvent.TicketType = existingEvent.HasPayment ? TicketType.Paid : TicketType.Free;
+            if (existingEvent.HasPayment && updateEventDto.Price <= 0)
+                return ($"Amount cannot be 0.00 when 'HasPayment' is true", null);
+            existingEvent.Price = updateEventDto.Price;
             await _context.SaveChangesAsync();
             return ($"{existingEvent.Name} has been updated successfully", existingEvent);
         }
@@ -539,6 +545,76 @@ namespace backend.Repository
             return ($"EventReminder Deleted successfully", true);
         }
 
-    
+        public async Task<(List<OrganizerAttendeeListDto>? attendeeListDto, bool IsSuccess)> GetEventAttendeeDetailsAsync(int id, string userId)
+        {
+            if (!await id.IsValidEvent(userId, _context))
+                return (null, false);
+            var attendees =await _context.Attendees
+            .Where(x=>x.EventId == id)
+            .ToListAsync();
+
+            var attendeesDto = attendees?.Select(x=>x.ToOrganizerAttendeeListDto()).ToList();
+
+            return (attendeesDto, true);
+        }
+
+        public async Task<(List<OrganizerTicketListDto>? ticketListDto, bool IsSuccess)> GetEventTicketDetailsAsync(int id, string userId)
+        {
+            if (!await id.IsValidEvent(userId, _context))
+                return (null, false);
+            var tickets =await _context.Tickets
+            .Where(x=>x.Attendee.EventId == id)
+            .ToListAsync();
+
+            var ticketsDto = tickets?.Select(x=>x.ToOrganizerTicketListDto()).ToList();
+
+            return (ticketsDto, true);
+            
+        }
+
+        public async Task<(List<OrganizerPaymentListDto>? paymentListDto, bool IsSuccess)> GetEventPaymentDetailsAsync(int id, string userId)
+        {
+            if (!await id.IsValidEvent(userId, _context))
+                return (null, false);
+            var payments =await _context.Payments
+            .Where(x=>x.EventId == id)
+            .ToListAsync();
+
+            var paymentsDto = payments?.Select(x=>x.ToOrganizerPaymentListDto()).ToList();
+
+            return (paymentsDto, true);
+        }
+
+        public async Task<(List<OrganizerFeedbackListDto>? feedbackListDto, bool IsSuccess)> GetEventRatingDetailsAsync(int id, string userId)
+        {
+            if (!await id.IsValidEvent(userId, _context))
+                return (null, false);
+            var feedbacks =await _context.Feedbacks
+            .Where(x=>x.EventId == id)
+            .ToListAsync();
+
+            var feedbacksDto = feedbacks?.Select(x=>x.ToOrganizerFeedbackListDto()).ToList();
+
+            return (feedbacksDto, true);
+        }
+
+        public async Task<(OrganizerWalletTransactionsDto?, bool IsSuccess)> GetWalletTransactionsAsync(string userId)
+        {
+            var wallet = await _context.Wallets.FirstOrDefaultAsync(x=>x.UserId == userId);
+            if (wallet == null)
+                return (null, false);
+            decimal balance = wallet.Balance;
+            var transactions = await _context.Transactions
+            .Where(x=>x.UserId == userId)
+            .ToListAsync();
+            var transactionsDto = transactions.Select(x=>x.ToOrganizerTransactionsDto()).ToList();
+            var walletTransactionsDto = new OrganizerWalletTransactionsDto
+            {
+                Balance = balance,
+                Transactions = transactionsDto
+            };
+
+            return (walletTransactionsDto, true);
+        }
     }
 }

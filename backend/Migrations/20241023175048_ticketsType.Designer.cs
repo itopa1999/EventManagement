@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Data;
 
@@ -11,9 +12,11 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20241023175048_ticketsType")]
+    partial class ticketsType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,19 +54,19 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "09c6f900-be35-495d-8408-1db9d6c985c6",
+                            Id = "87f23869-7902-4a1c-b5b5-af71d247cea0",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "d7f34907-b481-4283-9719-534c99ad8be0",
+                            Id = "016a5075-f3cb-44ce-89cf-73d1a10a4e49",
                             Name = "Organizer",
                             NormalizedName = "ORGANIZER"
                         },
                         new
                         {
-                            Id = "8f1a0a19-498b-4168-9595-8c7e091be687",
+                            Id = "b54fdded-2108-4232-aa2b-8e5815d3d5a1",
                             Name = "Attendee",
                             NormalizedName = "ATTENDEE"
                         });
@@ -528,7 +531,7 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AttendeeId")
+                    b.Property<int>("AttendeeId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CheckedInAt")
@@ -540,7 +543,7 @@ namespace backend.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("TicketType")
+                    b.Property<int>("TicketType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -560,9 +563,6 @@ namespace backend.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -877,7 +877,8 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.Attendee", "Attendee")
                         .WithMany("Tickets")
                         .HasForeignKey("AttendeeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Attendee");
                 });

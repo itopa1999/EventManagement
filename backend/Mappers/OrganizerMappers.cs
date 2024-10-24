@@ -20,6 +20,60 @@ namespace backend.Mappers
             };
         }
 
+
+        public static OrganizerAttendeeListDto ToOrganizerAttendeeListDto(this Attendee attendee){
+            return new OrganizerAttendeeListDto {
+                Id = attendee.Id,
+                FirstName = attendee.FirstName,
+                LastName = attendee.LastName,
+                Email = attendee.Email,
+                PhoneNumber = attendee.PhoneNumber,
+                RegisteredAt = attendee.RegisteredAt
+
+            };
+        }
+
+
+        public static OrganizerTicketListDto ToOrganizerTicketListDto(this Ticket ticket){
+            return new OrganizerTicketListDto {
+                Id = ticket.Id,
+                AttendeeFirstName = ticket.Attendee?.FirstName,
+                AttendeeLastName = ticket.Attendee?.LastName,
+                AttendeeEmail = ticket.Attendee?.Email,
+                TicketType = ticket.TicketType.ToString(),
+                Price = ticket.Price,
+                IsCheckedIn = ticket.IsCheckedIn,
+                CheckedInAt = ticket.CheckedInAt
+
+            };
+        }
+
+
+        public static OrganizerPaymentListDto ToOrganizerPaymentListDto(this Payment payment){
+            return new OrganizerPaymentListDto {
+                Id = payment.Id,
+                Amount = payment.Amount,
+                PaymentDate = payment.PaymentDate,
+                Method = payment.Method.ToString(),
+                Status = payment.Status.ToString(),
+                TicketId = payment.TicketId,
+                TransactionId = payment.TransactionId,
+
+            };
+        }
+
+
+        public static OrganizerFeedbackListDto ToOrganizerFeedbackListDto(this Feedback feedback){
+            return new OrganizerFeedbackListDto {
+                Id = feedback.Id,
+                AttendeeEmail = feedback.AttendeeEmail,
+                Comments = feedback.Comments,
+                Rating = feedback.Rating,
+                SubmittedAt = feedback.SubmittedAt,
+
+            };
+        }
+
         
         public static organizerEventsDto ToOrganizerEventsDto(this Event listEvent){
             return new organizerEventsDto{
@@ -74,6 +128,20 @@ namespace backend.Mappers
                 Reminders = listEvent.Reminders.Select(x=>x.ToOrganizerReminderListDto()).ToList()
             };
         }
+
+        public static OrganizerTransactionsDto ToOrganizerTransactionsDto(this Transaction transaction){
+            return new OrganizerTransactionsDto{
+                Id = transaction.Id,
+                Amount = transaction.Amount,
+                Description = transaction.Description,
+                Ref = transaction.Ref,
+                Type = transaction.Type.ToString(),
+                Date = transaction.Date
+                
+
+            };
+        }
+    
 
 
 

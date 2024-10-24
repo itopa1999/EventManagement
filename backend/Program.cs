@@ -7,12 +7,20 @@ using backend.Repository;
 using backend.Services;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Log.Logger = new LoggerConfiguration()
+//     .WriteTo.File("Helpers/Logs/logfile.txt", rollingInterval: RollingInterval.Day)
+//     .CreateLogger();
+
+// builder.Host.UseSerilog();
 
 
 // controller
@@ -132,7 +140,8 @@ builder.Services.AddHangfireServer();
 builder.Services.AddScoped<IJWTService, JWTServices>();
 builder.Services.AddScoped<IAuthInterface, IAuthRepository>();
 builder.Services.AddScoped<IOrganizerInterfaces, OrganizerRepository>();
-
+builder.Services.AddScoped<IAttendeeInterface, AttendeeRepository>();
+builder.Services.AddHttpClient<FlutterwaveService>();
 
 
 builder.Services.AddCors(options =>

@@ -17,6 +17,7 @@ namespace backend.Dtos
         public string? Description { get; set; }
         public bool IsInvitationOnly  { get; set; } = false;
         public bool HasPayment { get; set; } = false;
+        public decimal Price { get; set; }
     }
 
     public class organizerEventsDto
@@ -88,8 +89,10 @@ namespace backend.Dtos
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string? Description { get; set; }
-        public bool IsInvitationOnly  { get; set; } = false;
-        public bool HasPayment { get; set; } = false;
+        public bool IsInvitationOnly  { get; set; }
+        public bool HasPayment { get; set; }
+        public decimal Price { get; set; }
+
     }
 
     public class OrganizerInvitationListDto
@@ -100,6 +103,51 @@ namespace backend.Dtos
         public InvitationStatus? Status { get; set; }
     }
 
+    public class OrganizerAttendeeListDto
+    {
+        public int Id { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? Email { get; set; }
+        public string? PhoneNumber { get; set; }
+        public DateTime RegisteredAt { get; set; }
+    }
+
+
+    public class OrganizerTicketListDto
+    {
+        public int Id { get; set; }
+        public string? AttendeeFirstName { get; set; }
+        public string? AttendeeLastName { get; set; }
+        public string? AttendeeEmail { get; set; }
+        public string? TicketType { get; set; }
+        public decimal Price { get; set; }
+        public bool IsCheckedIn { get; set; }
+        public DateTime CheckedInAt { get; set; }
+    }
+
+
+    public class OrganizerPaymentListDto
+    {
+        public int Id { get; set; }
+        public decimal Amount { get; set; }
+        public DateTime PaymentDate { get; set; }
+        public string? Method { get; set; }
+        public string? Status { get; set; }
+        public int TicketId { get; set; }
+        public string? TransactionId { get; set; } 
+
+    }
+
+
+    public class OrganizerFeedbackListDto
+    {
+        public int Id { get; set; }
+        public string? AttendeeEmail { get; set; }
+        public string? Comments { get; set; }
+        public int Rating { get; set; }
+        public DateTime SubmittedAt { get; set; }
+    }
 
 
 
@@ -117,7 +165,7 @@ namespace backend.Dtos
         public int Id { get; set; }
         public DateTime ReminderTime { get; set; }
         public string? Type { get; set; }
-        public bool HasSent { get; set; } = false;
+        public bool HasSent { get; set; }
     }
 
 
@@ -131,11 +179,29 @@ namespace backend.Dtos
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string? Description { get; set; }
-        public bool IsInvitationOnly  { get; set; } = false;
+        public bool IsInvitationOnly  { get; set; }
         public bool HasPayment { get; set; } = false;
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; }
         public List<OrganizerSessionListDto>? Sessions {get; set;} = new List<OrganizerSessionListDto>();
         public List<OrganizerReminderListDto>? Reminders {get; set;} = new List<OrganizerReminderListDto>();
+    }
+
+    public class OrganizerTransactionsDto
+    {
+        public int Id { get; set; }
+        public decimal Amount { get; set; }
+        public string? Description { get; set; }
+        public string? Ref { get; set; }
+        public string? Type { get; set; }
+        public DateTime Date { get; set; }
+    }
+
+
+    public class OrganizerWalletTransactionsDto
+    {
+        public decimal Balance { get; set; }
+        public List<OrganizerTransactionsDto>? Transactions {get; set;} = new List<OrganizerTransactionsDto>();
+
     }
 
 

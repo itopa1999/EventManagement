@@ -52,6 +52,8 @@ namespace backend.Models
         public string? Description { get; set; }
         public bool IsInvitationOnly  { get; set; } = false;
         public bool HasPayment { get; set; } = false;
+        public TicketType TicketType { get; set; } // ticket type
+        public decimal Price { get; set; } = 0; // set to 0 if free.
         public string? OrganizerId { get; set; } // Foreign key to User
         public User? Organizer { get; set; } // Navigation property
         public int? TemplateId { get; set; } // Foreign key for EventTemplate
@@ -110,9 +112,9 @@ namespace backend.Models
     public class Ticket
     {
         public int Id { get; set; }
-        public int AttendeeId { get; set; } // Foreign key for the associated attendee
+        public int? AttendeeId { get; set; } // Foreign key for the associated attendee
+        public TicketType? TicketType { get; set; }
         public Attendee? Attendee { get; set; } // Navigation property to the Attendee
-        public TicketType TicketType { get; set; }
         public decimal Price { get; set; } = 0; // Price of the ticket (0 for free tickets)
         public bool IsCheckedIn { get; set; } = false; // Indicates if the attendee has checked in
         public ICollection<Payment>? Payments { get; set; } = new List<Payment>();// Related Payment
@@ -131,7 +133,7 @@ namespace backend.Models
         public int EventId { get; set; } // FK to Event if the payment is for an event
         public string? TransactionId { get; set; } // External transaction ID from payment gateway
 
-        // Navigation properties
+        
         public Ticket? Ticket { get; set; }
         public Event? Event { get; set; }
     }
@@ -204,6 +206,7 @@ namespace backend.Models
         public string? Description { get; set; }
         public string? Ref { get; set; }
         public TransactionType Type { get; set; }
+        public DateTime Date { get; set; }
 
     }
 

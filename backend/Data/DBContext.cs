@@ -24,6 +24,7 @@ namespace backend.Data
         public DbSet<Feedback> Feedbacks { get; set; }
 
         public DbSet<LoginAttempt> LoginAttempts { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Otp> Otps { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
 
@@ -55,6 +56,27 @@ namespace backend.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Payment>()
+                .Property(p => p.Amount)
+                .HasColumnType("decimal(18,2)"); 
+
+            modelBuilder.Entity<Transaction>()
+                .Property(p => p.Amount)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Ticket>()
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Event>()
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)");
+
+            
+            modelBuilder.Entity<Wallet>()
+                .Property(p => p.Balance)
+                .HasColumnType("decimal(18,2)");
 
             modelBuilder.Entity<User>()
                 .Property(u => u.UserType)

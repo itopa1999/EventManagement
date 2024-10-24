@@ -1,0 +1,167 @@
+2024-10-23 17:18:30.090 +01:00 [INF] Start installing Hangfire SQL objects...
+2024-10-23 17:18:30.556 +01:00 [INF] Hangfire SQL objects installed.
+2024-10-23 17:18:30.674 +01:00 [INF] User profile is available. Using 'C:\Users\FMY-381\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-10-23 17:18:30.740 +01:00 [INF] Now listening on: http://localhost:5232
+2024-10-23 17:18:30.744 +01:00 [INF] Starting Hangfire Server using job storage: 'SQL Server: .@Event'
+2024-10-23 17:18:30.744 +01:00 [INF] Using the following options for SQL Server job storage: Queue poll interval: 00:00:00.
+2024-10-23 17:18:30.745 +01:00 [INF] Using the following options for Hangfire Server:
+    Worker count: 20
+    Listening queues: 'default'
+    Shutdown timeout: 00:00:15
+    Schedule polling interval: 00:00:15
+2024-10-23 17:18:30.753 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-10-23 17:18:30.754 +01:00 [INF] Hosting environment: Development
+2024-10-23 17:18:30.754 +01:00 [INF] Content root path: C:\Users\FMY-381\Desktop\projects\EventManagement\backend
+2024-10-23 17:18:30.827 +01:00 [INF] Server fmy-381:9696:1cf57877 successfully announced in 71.2446 ms
+2024-10-23 17:18:30.829 +01:00 [INF] Server fmy-381:9696:1cf57877 is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, ExpirationManager, CountersAggregator, SqlServerHeartbeatProcess, Worker, DelayedJobScheduler, RecurringJobScheduler...
+2024-10-23 17:18:30.835 +01:00 [INF] Server fmy-381:9696:1cf57877 all the dispatchers started
+2024-10-23 17:18:57.705 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5232/organizer/api/list/event - null null
+2024-10-23 17:18:57.732 +01:00 [WRN] Failed to determine the https port for redirect.
+2024-10-23 17:18:57.785 +01:00 [INF] Executing endpoint 'backend.Controllers.OrganizerController.ListEvents (backend)'
+2024-10-23 17:18:57.807 +01:00 [INF] Route matched with {action = "ListEvents", controller = "Organizer"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListEvents(backend.Helpers.OrganizerListEventQuery) on controller backend.Controllers.OrganizerController (backend).
+2024-10-23 17:18:58.708 +01:00 [INF] Executed DbCommand (15ms) [Parameters=[@__userId_0='?' (Size = 450), @__p_1='?' (DbType = Int32), @__p_2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [e].[Id], [e].[CreatedAt], [e].[Description], [e].[EndDate], [e].[EventType], [e].[HasPayment], [e].[IsInvitationOnly], [e].[Location], [e].[Name], [e].[OrganizerId], [e].[StartDate], [e].[State], [e].[TemplateId]
+FROM [Events] AS [e]
+WHERE [e].[OrganizerId] = @__userId_0
+ORDER BY [e].[CreatedAt] DESC
+OFFSET @__p_1 ROWS FETCH NEXT @__p_2 ROWS ONLY
+2024-10-23 17:18:58.766 +01:00 [INF] Wallet not found for userId: eb7de7a7-e472-40bd-9c37-5dbc102f4458
+2024-10-23 17:18:58.771 +01:00 [INF] Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[backend.Dtos.organizerEventsDto, backend, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2024-10-23 17:18:58.787 +01:00 [INF] Executed action backend.Controllers.OrganizerController.ListEvents (backend) in 977.2601ms
+2024-10-23 17:18:58.788 +01:00 [INF] Executed endpoint 'backend.Controllers.OrganizerController.ListEvents (backend)'
+2024-10-23 17:18:58.794 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5232/organizer/api/list/event - 200 375 application/json; charset=utf-8 1088.3312ms
+2024-10-23 17:29:11.058 +01:00 [INF] Server fmy-381:9696:1cf57877 caught stopping signal...
+2024-10-23 17:29:11.059 +01:00 [INF] Application is shutting down...
+2024-10-23 17:29:11.062 +01:00 [INF] Server fmy-381:9696:1cf57877 All dispatchers stopped
+2024-10-23 17:29:11.067 +01:00 [INF] Server fmy-381:9696:1cf57877 successfully reported itself as stopped in 3.4153 ms
+2024-10-23 17:29:11.067 +01:00 [INF] Server fmy-381:9696:1cf57877 has been stopped in total 8.6257 ms
+2024-10-23 17:29:18.286 +01:00 [INF] Start installing Hangfire SQL objects...
+2024-10-23 17:29:18.763 +01:00 [INF] Hangfire SQL objects installed.
+2024-10-23 17:29:18.904 +01:00 [INF] User profile is available. Using 'C:\Users\FMY-381\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-10-23 17:29:18.964 +01:00 [INF] Now listening on: http://localhost:5232
+2024-10-23 17:29:18.969 +01:00 [INF] Starting Hangfire Server using job storage: 'SQL Server: .@Event'
+2024-10-23 17:29:18.969 +01:00 [INF] Using the following options for SQL Server job storage: Queue poll interval: 00:00:00.
+2024-10-23 17:29:18.969 +01:00 [INF] Using the following options for Hangfire Server:
+    Worker count: 20
+    Listening queues: 'default'
+    Shutdown timeout: 00:00:15
+    Schedule polling interval: 00:00:15
+2024-10-23 17:29:18.977 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-10-23 17:29:18.977 +01:00 [INF] Hosting environment: Development
+2024-10-23 17:29:18.978 +01:00 [INF] Content root path: C:\Users\FMY-381\Desktop\projects\EventManagement\backend
+2024-10-23 17:29:19.063 +01:00 [INF] Server fmy-381:2160:a12ba343 successfully announced in 84.8711 ms
+2024-10-23 17:29:19.065 +01:00 [INF] Server fmy-381:2160:a12ba343 is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, ExpirationManager, CountersAggregator, SqlServerHeartbeatProcess, Worker, DelayedJobScheduler, RecurringJobScheduler...
+2024-10-23 17:29:19.072 +01:00 [INF] Server fmy-381:2160:a12ba343 all the dispatchers started
+2024-10-23 17:29:40.950 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5232/organizer/api/list/event - null null
+2024-10-23 17:29:40.974 +01:00 [WRN] Failed to determine the https port for redirect.
+2024-10-23 17:29:41.027 +01:00 [INF] Executing endpoint 'backend.Controllers.OrganizerController.ListEvents (backend)'
+2024-10-23 17:29:41.050 +01:00 [INF] Route matched with {action = "ListEvents", controller = "Organizer"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListEvents(backend.Helpers.OrganizerListEventQuery) on controller backend.Controllers.OrganizerController (backend).
+2024-10-23 17:29:41.941 +01:00 [INF] Executed DbCommand (17ms) [Parameters=[@__userId_0='?' (Size = 450), @__p_1='?' (DbType = Int32), @__p_2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [e].[Id], [e].[CreatedAt], [e].[Description], [e].[EndDate], [e].[EventType], [e].[HasPayment], [e].[IsInvitationOnly], [e].[Location], [e].[Name], [e].[OrganizerId], [e].[StartDate], [e].[State], [e].[TemplateId]
+FROM [Events] AS [e]
+WHERE [e].[OrganizerId] = @__userId_0
+ORDER BY [e].[CreatedAt] DESC
+OFFSET @__p_1 ROWS FETCH NEXT @__p_2 ROWS ONLY
+2024-10-23 17:29:41.998 +01:00 [INF] Wallet not found for userId: eb7de7a7-e472-40bd-9c37-5dbc102f4458
+2024-10-23 17:29:42.002 +01:00 [INF] Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[backend.Dtos.organizerEventsDto, backend, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2024-10-23 17:29:42.018 +01:00 [INF] Executed action backend.Controllers.OrganizerController.ListEvents (backend) in 965.1896ms
+2024-10-23 17:29:42.018 +01:00 [INF] Executed endpoint 'backend.Controllers.OrganizerController.ListEvents (backend)'
+2024-10-23 17:29:42.024 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5232/organizer/api/list/event - 200 375 application/json; charset=utf-8 1073.7396ms
+2024-10-23 17:32:20.009 +01:00 [INF] Server fmy-381:2160:a12ba343 caught stopping signal...
+2024-10-23 17:32:20.011 +01:00 [INF] Application is shutting down...
+2024-10-23 17:32:20.020 +01:00 [INF] Server fmy-381:2160:a12ba343 All dispatchers stopped
+2024-10-23 17:32:20.026 +01:00 [INF] Server fmy-381:2160:a12ba343 successfully reported itself as stopped in 4.324 ms
+2024-10-23 17:32:20.026 +01:00 [INF] Server fmy-381:2160:a12ba343 has been stopped in total 15.0771 ms
+2024-10-23 17:32:25.158 +01:00 [INF] Start installing Hangfire SQL objects...
+2024-10-23 17:32:25.618 +01:00 [INF] Hangfire SQL objects installed.
+2024-10-23 17:32:25.739 +01:00 [INF] User profile is available. Using 'C:\Users\FMY-381\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-10-23 17:32:25.801 +01:00 [INF] Now listening on: http://localhost:5232
+2024-10-23 17:32:25.807 +01:00 [INF] Starting Hangfire Server using job storage: 'SQL Server: .@Event'
+2024-10-23 17:32:25.808 +01:00 [INF] Using the following options for SQL Server job storage: Queue poll interval: 00:00:00.
+2024-10-23 17:32:25.808 +01:00 [INF] Using the following options for Hangfire Server:
+    Worker count: 20
+    Listening queues: 'default'
+    Shutdown timeout: 00:00:15
+    Schedule polling interval: 00:00:15
+2024-10-23 17:32:25.818 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-10-23 17:32:25.818 +01:00 [INF] Hosting environment: Development
+2024-10-23 17:32:25.818 +01:00 [INF] Content root path: C:\Users\FMY-381\Desktop\projects\EventManagement\backend
+2024-10-23 17:32:25.906 +01:00 [INF] Server fmy-381:23084:35a44ba4 successfully announced in 87.779 ms
+2024-10-23 17:32:25.909 +01:00 [INF] Server fmy-381:23084:35a44ba4 is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, ExpirationManager, CountersAggregator, SqlServerHeartbeatProcess, Worker, DelayedJobScheduler, RecurringJobScheduler...
+2024-10-23 17:32:25.917 +01:00 [INF] Server fmy-381:23084:35a44ba4 all the dispatchers started
+2024-10-23 18:05:29.029 +01:00 [INF] Server fmy-381:23084:35a44ba4 caught stopping signal...
+2024-10-23 18:05:29.032 +01:00 [INF] Application is shutting down...
+2024-10-23 18:05:29.036 +01:00 [INF] Server fmy-381:23084:35a44ba4 All dispatchers stopped
+2024-10-23 18:05:29.043 +01:00 [INF] Server fmy-381:23084:35a44ba4 successfully reported itself as stopped in 5.0637 ms
+2024-10-23 18:05:29.043 +01:00 [INF] Server fmy-381:23084:35a44ba4 has been stopped in total 12.5977 ms
+2024-10-23 18:05:37.281 +01:00 [INF] Start installing Hangfire SQL objects...
+2024-10-23 18:05:37.757 +01:00 [INF] Hangfire SQL objects installed.
+2024-10-23 18:05:37.855 +01:00 [INF] User profile is available. Using 'C:\Users\FMY-381\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-10-23 18:05:37.905 +01:00 [INF] Now listening on: http://localhost:5232
+2024-10-23 18:05:37.909 +01:00 [INF] Starting Hangfire Server using job storage: 'SQL Server: .@Event'
+2024-10-23 18:05:37.909 +01:00 [INF] Using the following options for SQL Server job storage: Queue poll interval: 00:00:00.
+2024-10-23 18:05:37.909 +01:00 [INF] Using the following options for Hangfire Server:
+    Worker count: 20
+    Listening queues: 'default'
+    Shutdown timeout: 00:00:15
+    Schedule polling interval: 00:00:15
+2024-10-23 18:05:37.917 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-10-23 18:05:37.918 +01:00 [INF] Hosting environment: Development
+2024-10-23 18:05:37.918 +01:00 [INF] Content root path: C:\Users\FMY-381\Desktop\projects\EventManagement\backend
+2024-10-23 18:05:37.990 +01:00 [INF] Server fmy-381:12736:a46a503a successfully announced in 70.7705 ms
+2024-10-23 18:05:37.992 +01:00 [INF] Server fmy-381:12736:a46a503a is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, ExpirationManager, CountersAggregator, SqlServerHeartbeatProcess, Worker, DelayedJobScheduler, RecurringJobScheduler...
+2024-10-23 18:05:38.000 +01:00 [INF] Server fmy-381:12736:a46a503a all the dispatchers started
+2024-10-23 18:06:02.736 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost:5232/organizer/api/update/event/1 - application/json-patch+json 258
+2024-10-23 18:06:02.775 +01:00 [WRN] Failed to determine the https port for redirect.
+2024-10-23 18:06:02.776 +01:00 [INF] CORS policy execution successful.
+2024-10-23 18:06:02.825 +01:00 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '23/10/2024 16:49:06', Current time (UTC): '23/10/2024 17:06:02'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateTokenPayloadAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+2024-10-23 18:06:02.833 +01:00 [INF] Bearer was not authenticated. Failure message: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '23/10/2024 16:49:06', Current time (UTC): '23/10/2024 17:06:02'.
+2024-10-23 18:06:02.836 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+ClaimsAuthorizationRequirement:Claim.Type=IsOrganizer and Claim.Value is one of the following values: (True)
+2024-10-23 18:06:02.840 +01:00 [INF] AuthenticationScheme: Bearer was challenged.
+2024-10-23 18:06:02.848 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost:5232/organizer/api/update/event/1 - 401 0 null 112.8666ms
+2024-10-23 18:06:10.886 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5232/swagger/index.html - null null
+2024-10-23 18:06:10.935 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5232/swagger/index.html - 200 null text/html;charset=utf-8 49.3233ms
+2024-10-23 18:06:11.272 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5232/swagger/v1/swagger.json - null null
+2024-10-23 18:06:11.395 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5232/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 122.7375ms
+2024-10-23 18:06:51.913 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost:5232/auth/api/user/login - application/json-patch+json 51
+2024-10-23 18:06:51.914 +01:00 [INF] CORS policy execution successful.
+2024-10-23 18:06:51.920 +01:00 [INF] Executing endpoint 'backend.Controllers.AuthController.UserLogin (backend)'
+2024-10-23 18:06:51.953 +01:00 [INF] Route matched with {action = "UserLogin", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] UserLogin(backend.Dtos.UserLoginDto) on controller backend.Controllers.AuthController (backend).
+2024-10-23 18:06:52.943 +01:00 [INF] Executed DbCommand (21ms) [Parameters=[@__loginDto_Username_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[Address], [a].[ConcurrencyStamp], [a].[CreatedAt], [a].[Email], [a].[EmailConfirmed], [a].[FirstName], [a].[Gender], [a].[LGA], [a].[LastName], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[OtherName], [a].[OtpId], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[State], [a].[TwoFactorEnabled], [a].[UserName], [a].[UserType]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[UserName] = @__loginDto_Username_0
+2024-10-23 18:06:53.101 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType1`7[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[backend.Helpers.UserType, backend, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2024-10-23 18:06:53.112 +01:00 [INF] Executed action backend.Controllers.AuthController.UserLogin (backend) in 1157.2917ms
+2024-10-23 18:06:53.113 +01:00 [INF] Executed endpoint 'backend.Controllers.AuthController.UserLogin (backend)'
+2024-10-23 18:06:53.119 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost:5232/auth/api/user/login - 200 584 application/json; charset=utf-8 1205.5521ms
+2024-10-23 18:07:28.007 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost:5232/organizer/api/update/event/1 - application/json-patch+json 258
+2024-10-23 18:07:28.009 +01:00 [INF] CORS policy execution successful.
+2024-10-23 18:07:28.031 +01:00 [INF] Executing endpoint 'backend.Controllers.OrganizerController.UpdateEvent (backend)'
+2024-10-23 18:07:28.035 +01:00 [INF] Route matched with {action = "UpdateEvent", controller = "Organizer"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] UpdateEvent(backend.Dtos.UpdateEventDto, Int32) on controller backend.Controllers.OrganizerController (backend).
+2024-10-23 18:07:28.110 +01:00 [INF] Executed DbCommand (10ms) [Parameters=[@__id_0='?' (DbType = Int32), @__userId_1='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [e].[Id], [e].[CreatedAt], [e].[Description], [e].[EndDate], [e].[EventType], [e].[HasPayment], [e].[IsInvitationOnly], [e].[Location], [e].[Name], [e].[OrganizerId], [e].[StartDate], [e].[State], [e].[TemplateId]
+FROM [Events] AS [e]
+WHERE [e].[Id] = @__id_0 AND [e].[OrganizerId] = @__userId_1
+2024-10-23 18:07:28.230 +01:00 [INF] Executed DbCommand (17ms) [Parameters=[@p4='?' (DbType = Int32), @p0='?' (DbType = DateTime2), @p1='?' (Size = 4000), @p2='?' (DbType = DateTime2), @p3='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+UPDATE [Events] SET [EndDate] = @p0, [Name] = @p1, [StartDate] = @p2, [State] = @p3
+OUTPUT 1
+WHERE [Id] = @p4;
+2024-10-23 18:07:28.238 +01:00 [INF] Update Event: Event with Id: 1_string has been updated successfully : userId: eb7de7a7-e472-40bd-9c37-5dbc102f4458
+2024-10-23 18:07:28.239 +01:00 [INF] Executing ObjectResult, writing value of type 'backend.Helpers.MessageResponse'.
+2024-10-23 18:07:28.240 +01:00 [INF] Executed action backend.Controllers.OrganizerController.UpdateEvent (backend) in 204.3599ms
+2024-10-23 18:07:28.240 +01:00 [INF] Executed endpoint 'backend.Controllers.OrganizerController.UpdateEvent (backend)'
+2024-10-23 18:07:28.240 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost:5232/organizer/api/update/event/1 - 200 50 application/json; charset=utf-8 232.9527ms
+2024-10-23 18:09:02.716 +01:00 [INF] Server fmy-381:12736:a46a503a caught stopping signal...
+2024-10-23 18:09:02.717 +01:00 [INF] Application is shutting down...
+2024-10-23 18:09:02.719 +01:00 [INF] Server fmy-381:12736:a46a503a All dispatchers stopped
+2024-10-23 18:09:02.724 +01:00 [INF] Server fmy-381:12736:a46a503a successfully reported itself as stopped in 4.3726 ms
+2024-10-23 18:09:02.724 +01:00 [INF] Server fmy-381:12736:a46a503a has been stopped in total 8.2773 ms

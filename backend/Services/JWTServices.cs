@@ -32,7 +32,7 @@ namespace backend.Services
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim("IsOrganizer", user.UserType.ToString()),
                 new Claim("IsAdmin", user.UserType.ToString()),
-                // new Claim(JwtRegisteredClaimNames.GivenName, appUser.UserName),
+                new Claim(JwtRegisteredClaimNames.GivenName, user.UserName),
                 // new Claim (JwtRegisteredClaimNames.Email, appUser.Email)
             };
             if (user.UserType == UserType.Admin)

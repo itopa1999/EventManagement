@@ -57,6 +57,13 @@ namespace backend.Helpers
         credit
     }
 
+    public enum BuyTicketCondition
+    {
+        error,
+        create,
+        flutter
+    }
+
 
     public enum EventType
     {

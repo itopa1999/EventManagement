@@ -5,6 +5,8 @@ namespace backend.Services
 {
     public static class DBServices
     {
+
+        // FOR ORGANIZER
      
         public static async Task<bool> IsValidEvent(this int id, string userId, DBContext context)
         {
@@ -29,6 +31,21 @@ namespace backend.Services
             var existingEventReminder = await context.Reminders.FirstOrDefaultAsync(x => x.Id == id && x.Event.OrganizerId == userId && x.EventId == eventId);
             return existingEventReminder != null;
         }
+
+
+        // FOR ATTENDEE
+        public static async Task<bool> IsValidEventRegistered(this string email, int eventId, DBContext context)
+        {
+            var existingEventAttendee = await context.Attendees.FirstOrDefaultAsync(x => x.Email == email && x.EventId == eventId);
+            return existingEventAttendee != null;
+        }
+
+        public static async Task<bool> IsValidEventAttendee(this int id, DBContext context)
+        {
+            var existingEvent = await context.Events.FirstOrDefaultAsync(x => x.Id == id);
+            return existingEvent != null;
+        }
+
 
     }
 

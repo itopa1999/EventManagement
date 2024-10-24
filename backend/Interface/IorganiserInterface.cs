@@ -52,14 +52,17 @@ namespace backend.Interface
              int id, int eventId, string userId);
         Task<(string message, bool IsSuccess)> DeleteEventReminderAsync (
             int id, int eventId, string userId);
-        Task<(List<OrganizerInvitationListDto>? invitationListDto, bool IsSuccess)> GetEventIvDetailsAsync (
+        Task<(List<OrganizerAttendeeListDto>? attendeeListDto, bool IsSuccess)> GetEventAttendeeDetailsAsync (
             int eventId, string userId);
-        Task<(List<OrganizerInvitationListDto>? invitationListDto, bool IsSuccess)> GetEventIvDetailsAsync (
+        Task<(List<OrganizerTicketListDto>? ticketListDto, bool IsSuccess)> GetEventTicketDetailsAsync (
             int eventId, string userId);
-        Task<(List<OrganizerInvitationListDto>? invitationListDto, bool IsSuccess)> GetEventIvDetailsAsync (
+        Task<(List<OrganizerPaymentListDto>? paymentListDto, bool IsSuccess)> GetEventPaymentDetailsAsync (
             int eventId, string userId);
-        Task<(List<OrganizerInvitationListDto>? invitationListDto, bool IsSuccess)> GetEventIvDetailsAsync (
+        Task<(List<OrganizerFeedbackListDto>? feedbackListDto, bool IsSuccess)> GetEventRatingDetailsAsync (
             int eventId, string userId);
+        Task<(OrganizerWalletTransactionsDto?, bool IsSuccess)> GetWalletTransactionsAsync (string userId);
+
+            
 
         
     }
