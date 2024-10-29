@@ -51,19 +51,19 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b6ab04cc-44d3-45a8-91af-579fb78bdc7a",
+                            Id = "6f2a9016-f58f-4a4b-835e-4193a815c08e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "93c8b955-d7c5-4af4-9ecc-76de944f2f8b",
+                            Id = "c641c8c7-1789-46d3-9c5d-9ffbd4537a42",
                             Name = "Organizer",
                             NormalizedName = "ORGANIZER"
                         },
                         new
                         {
-                            Id = "d6053f05-6bff-4346-a56b-c9a5b302ac6a",
+                            Id = "c7f36bfd-6383-4d97-8652-b0390ccf8b09",
                             Name = "Attendee",
                             NormalizedName = "ATTENDEE"
                         });
@@ -236,6 +236,9 @@ namespace backend.Migrations
 
                     b.Property<bool>("HasPayment")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsBlock")
                         .HasColumnType("bit");

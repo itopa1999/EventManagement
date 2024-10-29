@@ -9,20 +9,28 @@ using CsvHelper;
 using ExcelDataReader;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting;
 
 namespace backend.Repository
 {
     public class OrganizerRepository : IOrganizerInterfaces
     {
         public readonly DBContext _context;
+        private readonly string _mediaFolderPath;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         public OrganizerRepository(
-            DBContext context
+            DBContext context,
+            IConfiguration configuration,
+            IWebHostEnvironment webHostEnvironment
+
         )
         {
             _context = context;
+            _mediaFolderPath = configuration["MediaFolderPath"];
+            _webHostEnvironment = webHostEnvironment;
         }
 
-        public async Task<List<organizerEventsDto>?> OrganizerEventsAsync(string userId, OrganizerListEventQuery query)
+        public async Task<List<organizerEventsDto>?> OrganizerEventsAsync(string userId, OrganizerListEventQuery query, HttpRequest request)
         {
             var eventLists = _context.Events
             .Where(x=>x.OrganizerId == userId)
@@ -56,7 +64,7 @@ namespace backend.Repository
             }
 
             var eventListDtos = eventLists
-                .Select(x => x.ToOrganizerEventsDto());
+                .Select(x => x.ToOrganizerEventsDto(request));
 
             var SkipNumber = (query.PageNumber - 1) * query.PageSize;
             return await eventListDtos.Skip(SkipNumber).Take(query.PageSize).ToListAsync();
@@ -78,7 +86,6 @@ namespace backend.Repository
             }
              if (!Enum.IsDefined(typeof(EventType), createEventDto.EventType))
                 return ("Invalid Event type.", null);
-            
             var existingEvent = await _context.Events.FirstOrDefaultAsync(x=>x.Name == createEventDto.Name
              && x.EventType == createEventDto.EventType
              && x.OrganizerId == userId);
@@ -97,7 +104,8 @@ namespace backend.Repository
                     EndDate = createEventDto.EndDate,
                     Description = createEventDto.Description,
                     HasPayment = createEventDto.HasPayment,
-                    IsInvitationOnly = createEventDto.IsInvitationOnly
+                    IsInvitationOnly = createEventDto.IsInvitationOnly,
+                    ImagePath = await StringHelpers.SaveImage(createEventDto.EventImage)
                 };
                 if (eventModel.HasPayment && createEventDto.Price <= 0)
                 {
@@ -105,6 +113,8 @@ namespace backend.Repository
                 }
                 eventModel.TicketType = eventModel.HasPayment ? TicketType.Paid : TicketType.Free;
                 eventModel.Price = createEventDto.Price;
+
+
                 await _context.Events.AddAsync(eventModel);
                 
             var checkEventTemplateExists = await _context.EventTemplates.FirstOrDefaultAsync(x=>x.Events.Any(e => e.OrganizerId == userId)
@@ -144,7 +154,7 @@ namespace backend.Repository
             }
 
             if (!await id.IsValidEvent(userId, _context))
-                return ($"Event with Id: {id} doesn't exists.", null);
+                return ($"Event doesn't exists.", null);
             var existingEventSession = await _context.Sessions.FirstOrDefaultAsync(x=>x.Title == createEventSessionDto.Title
             && x.EventId == id && x.Event.OrganizerId == userId);
             if (existingEventSession != null)
@@ -182,7 +192,7 @@ namespace backend.Repository
                 return ($"Invalid email {createEventIvDto.AttendeeEmail}", null);
             }
             if (!await id.IsValidEvent(userId, _context))
-                return ($"Event with Id: {id} doesn't exists.", null);
+                return ($"Event doesn't exists.", null);
             var existingEventIv = await _context.Invitations.FirstOrDefaultAsync(x=>x.AttendeeEmail == createEventIvDto.AttendeeEmail
             && x.EventId == id && x.Event.OrganizerId == userId);
             if (existingEventIv != null)
@@ -204,7 +214,7 @@ namespace backend.Repository
             if (file == null || file.Length == 0)
             return ("No file uploaded.", false);
             if (!await id.IsValidEvent(userId, _context))
-                return ($"Event with Id: {id} doesn't exists.", false);
+                return ($"Event doesn't exists.", false);
             List<CreateEventIvDto> eventIvs = new List<CreateEventIvDto>();
             var extension = Path.GetExtension(file.FileName).ToLower();
             int successfulImports = 0,duplicateCount = 0,nullDataCount = 0,invalidDataCount = 0,inValidEmail = 0,updatedRecord = 0;
@@ -349,7 +359,7 @@ namespace backend.Repository
             }
 
             if (!await id.IsValidEvent(userId, _context))
-                return ($"Event with Id: {id} doesn't exists.", null);
+                return ($"Event doesn't exists.", null);
             var existingEventReminder = await _context.Reminders.FirstOrDefaultAsync(x=>x.ReminderTime == eventReminderDto.ReminderTime
             && x.EventId == id && x.Event.OrganizerId == userId && x.Type == eventReminderDto.Type);
             if (existingEventReminder != null)
@@ -379,7 +389,7 @@ namespace backend.Repository
                 }
             }
             if (!await id.IsValidEvent(userId, _context))
-                return ($"Event with Id: {id} doesn't exists.", null);
+                return ($"Event doesn't exists.", null);
             var existingEvent = await _context.Events.FindAsync(id);
             existingEvent.Name = updateEventDto.Name;
             existingEvent.EventType = updateEventDto.EventType;
@@ -390,6 +400,7 @@ namespace backend.Repository
             existingEvent.Description = updateEventDto.Description;
             existingEvent.HasPayment = updateEventDto.HasPayment;
             existingEvent.IsInvitationOnly = updateEventDto.IsInvitationOnly;
+            existingEvent.ImagePath = await StringHelpers.SaveImage(updateEventDto.EventImage);
             existingEvent.TicketType = existingEvent.HasPayment ? TicketType.Paid : TicketType.Free;
             if (existingEvent.HasPayment && updateEventDto.Price <= 0)
                 return ($"Amount cannot be 0.00 when 'HasPayment' is true", null);
@@ -401,7 +412,7 @@ namespace backend.Repository
         public async Task<(string message, bool IsSuccess)> DeleteEventAsync(int id, string userId)
         {
             if (!await id.IsValidEvent(userId, _context))
-                return ($"Event with Id: {id} doesn't exists.", false);
+                return ($"Event doesn't exists.", false);
             var existingEvent = await _context.Events.FindAsync(id);
             
              _context.Events.Remove(existingEvent);
@@ -409,7 +420,7 @@ namespace backend.Repository
              return ($"Event Deleted successfully", true);
         }
 
-        public async Task<(OrganizerEventDetailsDto? eventDetailsDto, bool IsSuccess)> GetEventDetailsAsync(int id, string userId)
+        public async Task<(OrganizerEventDetailsDto? eventDetailsDto, bool IsSuccess)> GetEventDetailsAsync(int id, string userId, HttpRequest request)
         {
             if (!await id.IsValidEvent(userId, _context))
                 return (null, false);
@@ -418,7 +429,7 @@ namespace backend.Repository
             .Include(x=>x.Reminders)
             .FirstOrDefaultAsync(x=>x.Id == id);
 
-            var eventDetailsDto = existingEvent?.ToOrganizerEventDetailsDto();
+            var eventDetailsDto = existingEvent?.ToOrganizerEventDetailsDto(request);
             return (eventDetailsDto, true);
             
         }
@@ -563,6 +574,7 @@ namespace backend.Repository
             if (!await id.IsValidEvent(userId, _context))
                 return (null, false);
             var tickets =await _context.Tickets
+            .Include(x=>x.Attendee)
             .Where(x=>x.Attendee.EventId == id)
             .ToListAsync();
 
@@ -577,6 +589,7 @@ namespace backend.Repository
             if (!await id.IsValidEvent(userId, _context))
                 return (null, false);
             var payments =await _context.Payments
+            
             .Where(x=>x.EventId == id)
             .ToListAsync();
 

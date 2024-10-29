@@ -115,6 +115,32 @@ namespace backend.Helpers
         }
 
 
+        public async static Task<string> SaveImage(IFormFile imageFile)
+        {
+            if (imageFile.Length > 0)
+            {
+                var mediaFolder = Path.Combine(Directory.GetCurrentDirectory(), "Media");
+                if (!Directory.Exists(mediaFolder))
+                {
+                    Directory.CreateDirectory(mediaFolder); // Create Media folder if it doesn't exist
+                }
+
+                var fileName = $"{Guid.NewGuid()}_{imageFile.FileName}"; // Unique file name
+                var filePath = Path.Combine(mediaFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(stream); // Save the image file
+                }
+
+                return $"/Media/{fileName}"; // Return the relative path for storage in the database
+            }
+            return "Media/defaultEventImage.jpg";
+        }            
+         
+
+
+
         
 
 

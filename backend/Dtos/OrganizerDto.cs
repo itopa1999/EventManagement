@@ -18,6 +18,7 @@ namespace backend.Dtos
         public bool IsInvitationOnly  { get; set; } = false;
         public bool HasPayment { get; set; } = false;
         public decimal Price { get; set; }
+        public IFormFile? EventImage { get; set; }
     }
 
     public class organizerEventsDto
@@ -30,6 +31,7 @@ namespace backend.Dtos
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string? Description { get; set; }
+        public string? ImagePath { get; set; }
     }
 
 
@@ -92,6 +94,7 @@ namespace backend.Dtos
         public bool IsInvitationOnly  { get; set; }
         public bool HasPayment { get; set; }
         public decimal Price { get; set; }
+        public IFormFile? EventImage { get; set; }
 
     }
 
@@ -100,7 +103,7 @@ namespace backend.Dtos
         public int Id { get; set; }
         public string? AttendeeEmail { get; set; }
         public DateTime SentAt { get; set; }
-        public InvitationStatus? Status { get; set; }
+        public string? Status { get; set; }
     }
 
     public class OrganizerAttendeeListDto
@@ -181,7 +184,9 @@ namespace backend.Dtos
         public string? Description { get; set; }
         public bool IsInvitationOnly  { get; set; }
         public bool HasPayment { get; set; } = false;
+        public decimal Price { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string? ImagePath { get; set; }
         public List<OrganizerSessionListDto>? Sessions {get; set;} = new List<OrganizerSessionListDto>();
         public List<OrganizerReminderListDto>? Reminders {get; set;} = new List<OrganizerReminderListDto>();
     }

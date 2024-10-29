@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json.Serialization;
 using backend.AdminRepository;
 using backend.Data;
@@ -10,13 +11,26 @@ using backend.Services;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var cultureInfo = new CultureInfo("en-NG");
+var cultures = new[] { cultureInfo };
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = new RequestCulture(cultureInfo);
+    options.SupportedCultures = cultures;
+    options.SupportedUICultures = cultures;
+});
 
 // Log.Logger = new LoggerConfiguration()
 //     .WriteTo.File("Helpers/Logs/logfile.txt", rollingInterval: RollingInterval.Day)
@@ -127,6 +141,12 @@ builder.Services.AddAuthentication(options => {
 // //User-Setting and JWT Authentication
 
 
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 700 * 1024; // Set limit to 700 KB
+});
+
+
 
 
 // //database
@@ -160,9 +180,16 @@ builder.Services.AddCors(options =>
 });
 
 
+
+
 var app = builder.Build();
 
 app.UseHangfireDashboard();
+
+// RecurringJob.AddOrUpdate<ReminderService>(
+//     "send-reminders", 
+//     service => service.CheckAndSendRemindersAsync(), 
+//     Cron.Minutely);
 
 if (app.Environment.IsDevelopment())
 {
@@ -171,6 +198,17 @@ if (app.Environment.IsDevelopment())
 }
 // app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseHttpsRedirection();
+
+app.UseStaticFiles(); // Enable default static file handling
+
+// Optional: Serve files from the "Media" folder
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "Media")),
+    RequestPath = "/Media"
+});
+        
 
 app.UseCors("AllowAllOrigins");
 
@@ -190,12 +228,14 @@ app.Use(async (context, next) =>
     }
     await next.Invoke();
 });
-
+app.UseRequestLocalization();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<BlockAllUserMiddleware>();
 
 app.MapControllers();
+
+
 
 app.Run();
 

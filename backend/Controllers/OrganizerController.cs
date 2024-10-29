@@ -41,7 +41,7 @@ namespace backend.Controllers
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> ListEvents([FromQuery] OrganizerListEventQuery query){
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var listEvent = await _organizerRepo.OrganizerEventsAsync(userId, query);
+            var listEvent = await _organizerRepo.OrganizerEventsAsync(userId, query, Request);
             if (listEvent == null)
             {
                 _logger.LogInformation($"List Event: NoContent for userId: {userId}");
@@ -61,7 +61,7 @@ namespace backend.Controllers
         [Authorize(Policy = "IsOrganizer")]
         [ProducesResponseType(typeof(MessageResponse), (int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateEvent([FromBody] CreateEventDto createEventDto)
+        public async Task<IActionResult> CreateEvent([FromForm] CreateEventDto createEventDto)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var (message, createEvent) = await _organizerRepo.CreateEventAsync(createEventDto,userId);
@@ -81,11 +81,11 @@ namespace backend.Controllers
         [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetEventsDetails([FromRoute] int eventId){
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var (eventDetailsDto, IsSuccess) = await _organizerRepo.GetEventDetailsAsync(eventId,userId);
+            var (eventDetailsDto, IsSuccess) = await _organizerRepo.GetEventDetailsAsync(eventId,userId, Request);
             if (!IsSuccess)
             {
                 _logger.LogError($"Event Details: Event with Id: {eventId} not found or userId : {userId}");
-                return BadRequest(new ErrorResponse { ErrorDescription = $"Event with Id: {eventId} not found" });
+                return BadRequest(new ErrorResponse { ErrorDescription = $"Event not found" });
             }
 
             return StatusCode((int)HttpStatusCode.OK, eventDetailsDto);
@@ -97,7 +97,7 @@ namespace backend.Controllers
         [Authorize(Policy = "IsOrganizer")]
         [ProducesResponseType(typeof(MessageResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> UpdateEvent([FromBody] UpdateEventDto updateEventDto,[FromRoute] int eventId)
+        public async Task<IActionResult> UpdateEvent([FromForm] UpdateEventDto updateEventDto,[FromRoute] int eventId)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var (message, updateEvent) = await _organizerRepo.UpdateEventAsync(updateEventDto,eventId,userId);
@@ -218,7 +218,7 @@ namespace backend.Controllers
             if (!IsSuccess)
             {
                 _logger.LogError($"Get Event Invitation:  Event with Id: {eventId} not found : userId: {userId}");
-                return BadRequest(new ErrorResponse { ErrorDescription = $"Event with Id: {eventId} not found" });
+                return BadRequest(new ErrorResponse { ErrorDescription = $"Event not found" });
             }
 
             return StatusCode((int)HttpStatusCode.OK, eventIvDetailsDto);
@@ -363,7 +363,7 @@ namespace backend.Controllers
             if (!IsSuccess)
             {
                 _logger.LogError($"Get Event attendees:  Event with Id: {eventId} not found : userId: {userId}");
-                return BadRequest(new ErrorResponse { ErrorDescription = $"Event with Id: {eventId} not found" });
+                return BadRequest(new ErrorResponse { ErrorDescription = $"Event not found" });
             }
 
             return StatusCode((int)HttpStatusCode.OK, eventAttendeeDetailsDto);
@@ -381,7 +381,7 @@ namespace backend.Controllers
             if (!IsSuccess)
             {
                  _logger.LogError($"Get Event tickets:  Event with Id: {eventId} not found : userId: {userId}");
-                return BadRequest(new ErrorResponse { ErrorDescription = $"Event with Id: {eventId} not found" });
+                return BadRequest(new ErrorResponse { ErrorDescription = $"Event not found" });
             }
 
             return StatusCode((int)HttpStatusCode.OK, eventTicketDetailsDto);
@@ -399,7 +399,7 @@ namespace backend.Controllers
             if (!IsSuccess)
             {
                  _logger.LogError($"Get Event payments:  Event with Id: {eventId} not found : userId: {userId}");
-                return BadRequest(new ErrorResponse { ErrorDescription = $"Event with Id: {eventId} not found" });
+                return BadRequest(new ErrorResponse { ErrorDescription = $"Event not found" });
             }
 
             return StatusCode((int)HttpStatusCode.OK, eventPaymentsDetailsDto);
@@ -417,7 +417,7 @@ namespace backend.Controllers
             if (!IsSuccess)
             {
                  _logger.LogError($"Get Event feedbacks:  Event with Id: {eventId} not found : userId: {userId}");
-                return BadRequest(new ErrorResponse { ErrorDescription = $"Event with Id: {eventId} not found" });
+                return BadRequest(new ErrorResponse { ErrorDescription = $"Event not found" });
             }
 
             return StatusCode((int)HttpStatusCode.OK, eventFeedbacksDetailsDto);

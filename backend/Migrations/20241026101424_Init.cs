@@ -41,6 +41,7 @@ namespace backend.Migrations
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsBlock = table.Column<bool>(type: "bit", nullable: false),
                     OtpId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -60,6 +61,24 @@ namespace backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Ref = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -219,7 +238,8 @@ namespace backend.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsBlock = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -243,7 +263,8 @@ namespace backend.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EventId = table.Column<int>(type: "int", nullable: false),
                     QRCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RegisteredAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    RegisteredAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsBlock = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -256,8 +277,8 @@ namespace backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AttendeeId = table.Column<int>(type: "int", nullable: false),
-                    TicketType = table.Column<int>(type: "int", nullable: false),
+                    AttendeeId = table.Column<int>(type: "int", nullable: true),
+                    TicketType = table.Column<int>(type: "int", nullable: true),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     IsCheckedIn = table.Column<bool>(type: "bit", nullable: false),
                     CheckedInAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -280,13 +301,21 @@ namespace backend.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EventType = table.Column<int>(type: "int", nullable: false),
+                    State = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsInvitationOnly = table.Column<bool>(type: "bit", nullable: false),
+                    HasPayment = table.Column<bool>(type: "bit", nullable: false),
+                    TicketType = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     OrganizerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     TemplateId = table.Column<int>(type: "int", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsBlock = table.Column<bool>(type: "bit", nullable: false),
+                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -406,7 +435,8 @@ namespace backend.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EventId = table.Column<int>(type: "int", nullable: false),
                     ReminderTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false)
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    HasSent = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -447,9 +477,9 @@ namespace backend.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "5779b47f-6199-4ebc-8515-72f034daea0b", null, "Admin", "ADMIN" },
-                    { "c25db6d3-46fc-4ff0-be0a-b9caa25c42d2", null, "Organizer", "ORGANIZER" },
-                    { "e6ec5f06-6847-4ed9-924e-6eca913e1241", null, "Attendee", "ATTENDEE" }
+                    { "6f2a9016-f58f-4a4b-835e-4193a815c08e", null, "Admin", "ADMIN" },
+                    { "c641c8c7-1789-46d3-9c5d-9ffbd4537a42", null, "Organizer", "ORGANIZER" },
+                    { "c7f36bfd-6383-4d97-8652-b0390ccf8b09", null, "Attendee", "ATTENDEE" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -640,6 +670,9 @@ namespace backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "Sessions");
+
+            migrationBuilder.DropTable(
+                name: "Transactions");
 
             migrationBuilder.DropTable(
                 name: "Wallets");

@@ -15,7 +15,7 @@ namespace backend.Mappers
                 Id = invitation.Id,
                 AttendeeEmail = invitation.AttendeeEmail,
                 SentAt = invitation.SentAt,
-                Status = invitation.Status
+                Status = invitation.Status.ToString()
 
             };
         }
@@ -75,7 +75,7 @@ namespace backend.Mappers
         }
 
         
-        public static organizerEventsDto ToOrganizerEventsDto(this Event listEvent){
+        public static organizerEventsDto ToOrganizerEventsDto(this Event listEvent, HttpRequest request){
             return new organizerEventsDto{
                 Id = listEvent.Id,
                 Name = listEvent.Name,
@@ -84,7 +84,8 @@ namespace backend.Mappers
                 Location=listEvent.Location,
                 StartDate = listEvent.StartDate,
                 EndDate = listEvent.EndDate,
-                Description = listEvent.Description
+                Description = listEvent.Description,
+                ImagePath = $"{request.Scheme}://{request.Host}{listEvent.ImagePath}"
             };
         }
 
@@ -111,7 +112,7 @@ namespace backend.Mappers
             };
          }
 
-        public static OrganizerEventDetailsDto ToOrganizerEventDetailsDto(this Event listEvent){
+        public static OrganizerEventDetailsDto ToOrganizerEventDetailsDto(this Event listEvent, HttpRequest request){
             return new OrganizerEventDetailsDto{
                 Id = listEvent.Id,
                 Name = listEvent.Name,
@@ -123,7 +124,9 @@ namespace backend.Mappers
                 Description = listEvent.Description,
                 IsInvitationOnly = listEvent.IsInvitationOnly,
                 HasPayment = listEvent.HasPayment,
+                Price = listEvent.Price,
                 CreatedAt = listEvent.CreatedAt,
+                ImagePath = $"{request.Scheme}://{request.Host}{listEvent.ImagePath}",
                 Sessions = listEvent.Sessions.Select(x=>x.ToOrganizerReminderListDto()).ToList(),
                 Reminders = listEvent.Reminders.Select(x=>x.ToOrganizerReminderListDto()).ToList()
             };

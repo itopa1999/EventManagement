@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Threading.Tasks;
 using backend.Data;
 using backend.Dtos;
 using backend.Helpers;
 using backend.Interface;
 using backend.Models;
-using backend.Services.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -143,7 +137,7 @@ namespace backend.Repository
                 return ("Answer is Incorrect", false);
             }else{
                 existingOtp.Token = _token.GenerateToken();
-                existingOtp.CreatedAt = DateTime.Now;
+                existingOtp.CreatedAt = TimeHelper.GetNigeriaTime();
                 existingOtp.IsActive = true;
                 await _context.SaveChangesAsync();
                 Console.WriteLine($"Token is {existingOtp.Token}");
@@ -197,7 +191,7 @@ namespace backend.Repository
                 var otp = await _context.Otps.FirstOrDefaultAsync(x=>x.UserId==userModel.Id);
                 otp.Token =  _token.GenerateToken();
                 otp.IsActive = true;
-                otp.CreatedAt = DateTime.Now;
+                otp.CreatedAt = TimeHelper.GetNigeriaTime();
                 await _context.SaveChangesAsync();
                 Console.WriteLine($"token has been resend {otp.Token}");
                 return ($"token has been successfully resend {otp.Token}", true);
@@ -269,15 +263,15 @@ namespace backend.Repository
                 return("Invalid OTP token.", false);
             }else if (getOtp.IsActive == false){
                 return("OTP has already been used.", false);
-            }else if (getOtp.CreatedAt.AddMinutes(10) <= DateTime.Now ){
+            }else if (getOtp.CreatedAt.AddMinutes(10) <= TimeHelper.GetNigeriaTime() ){
                 getOtp.IsActive = false;
-                getOtp.CreatedAt = DateTime.Now;
+                getOtp.CreatedAt = TimeHelper.GetNigeriaTime();
                 await _context.SaveChangesAsync();
                 return("token has expired", false);
             }
             else{
                 getOtp.IsActive = false;
-                getOtp.CreatedAt = DateTime.Now;
+                getOtp.CreatedAt = TimeHelper.GetNigeriaTime();
 
                 userModel.EmailConfirmed = true;
                 userModel.PhoneNumberConfirmed = true;

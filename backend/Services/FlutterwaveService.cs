@@ -1,26 +1,29 @@
 using System.Text;
 using backend.Models;
 using Newtonsoft.Json;
-
+using System.Net.Http;
 public class FlutterwaveService
 {
     private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
     private readonly string _secretKey;
+    private readonly ILogger<FlutterwaveService> _logger;
 
-    public FlutterwaveService(HttpClient httpClient, IConfiguration config)
+    public FlutterwaveService(HttpClient httpClient, IConfiguration config,ILogger<FlutterwaveService> logger)
     {
         _httpClient = httpClient;
         _baseUrl = config["Flutter:BaseUrl"];
         _secretKey = config["Flutter:Secret_key"];
+        _logger = logger;
         
     }
 
     // Method to initialize a payment
-    public async Task<string> InitializePayment(decimal amount, Attendee attendee, int eventId)
+    public async Task<string> InitializePayment(decimal amount, Attendee attendee, int eventId, HttpRequest request)
     {
         Console.WriteLine(amount);
-        var redirectUrl = GenerateRedirectUrl(eventId);
+        var redirectUrl = GenerateRedirectUrl(eventId, request);
+        Console.WriteLine(redirectUrl);
         var paymentData = new
         {
             tx_ref = GenerateUUID(),
@@ -50,12 +53,25 @@ public class FlutterwaveService
 
         // Read and return the response content
         var result = await response.Content.ReadAsStringAsync();
-        return result; // Optionally parse the response to get the payment link if needed
+        var responseObject = JsonConvert.DeserializeObject<Response>(result);
+
+        // Return only the link
+        return responseObject?.Data?.Link; // Optionally parse the response to get the payment link if needed
         }
 
-        private string GenerateRedirectUrl(int eventId)
+        public class Response
         {
-        return $"http://localhost:5232/attendee/api/confirm/ticket/payment/{eventId}"; // Replace with actual logic
+            public Data? Data { get; set; }
+        }
+
+        public class Data
+        {
+            public string? Link { get; set; }
+        }
+
+        private string GenerateRedirectUrl(int eventId, HttpRequest request)
+        {
+        return $"{request.Scheme}://{request.Host}/attendee/api/confirm/ticket/payment/{eventId}";
     
         }
           private static string GenerateUUID()

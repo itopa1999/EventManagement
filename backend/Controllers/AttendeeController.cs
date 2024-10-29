@@ -65,7 +65,7 @@ namespace backend.Controllers
         {
             try
             {
-                var (message, ticketCondition) = await _attendeeRepo.AttendeeBuyTicketAsync(buyTicketDto,eventId);
+                var (message, ticketCondition) = await _attendeeRepo.AttendeeBuyTicketAsync(buyTicketDto,eventId,Request);
                 if (ticketCondition == BuyTicketCondition.error)
                 {
                     _logger.LogError($"Buy Event Ticket: Event with Id: {eventId} An error occurred: {message} for {buyTicketDto.Email}");
@@ -74,6 +74,7 @@ namespace backend.Controllers
                 _logger.LogInformation($"Buy Event Ticket: Event with Id: {eventId}_{message} for {buyTicketDto.Email}");
                 return StatusCode((int)HttpStatusCode.Created, new MessageResponse(message));
                 }else{
+                _logger.LogInformation($"Buy Event Ticket: Event with Id: {eventId}_{message} for {buyTicketDto.Email}");
                 return StatusCode((int)HttpStatusCode.OK, new MessageResponse(message));
                 }
             }
@@ -96,17 +97,20 @@ namespace backend.Controllers
                 var (verifiedDto,message, IsCompleted) = await _attendeeRepo.VerifyTicketPaymentAsync(transaction_id);
                 if (!IsCompleted)
                 {
+                    _logger.LogError($"Confirm Buy Event Ticket: Event with Id: {eventId} An error occurred: {message}.");
                     return BadRequest(new ErrorResponse { ErrorDescription = message });
                 }
                 if (verifiedDto?.Status != null && verifiedDto.Status != "success" &&
                     verifiedDto?.Message == "Transaction fetched successfully")
                 {
+                    _logger.LogError($"Confirm Buy Event Ticket: Event with Id: {eventId} An error occurred: Payment verification failed : {transaction_id}.");
                     return BadRequest(new ErrorResponse { ErrorDescription = $"Payment verification failed {transaction_id}" });
                 }
 
                 var (result, IsSuccess) = await _attendeeRepo.VerifyTicketPaymentSettleAsync(verifiedDto, eventId,transaction_id);
                 if (!IsSuccess)
                 {
+                    _logger.LogError($"Confirm Buy Event Ticket: Event with Id: {eventId} An error occurred: {result}");
                     return BadRequest(new ErrorResponse { ErrorDescription = result });
                 }
                 
@@ -115,6 +119,7 @@ namespace backend.Controllers
                 return StatusCode((int)HttpStatusCode.OK, new MessageResponse(result));
             }catch(Exception ex){
                 await transaction.RollbackAsync();
+                _logger.LogCritical($"Confirm Buy Event Ticket: Event with Id: {eventId} An error occurred: {ex.Message}");
                 return StatusCode((int)HttpStatusCode.InternalServerError, new ErrorResponse { ErrorDescription = $"{ex.Message}" });
             
             }
@@ -131,17 +136,20 @@ namespace backend.Controllers
                 var (result, IsValid) = await _attendeeRepo.ReConfirmTicketPaymentSettleAsync(reBuyTicketDto, eventId);
                 if (!IsValid)
                 {
+                    _logger.LogError($"Confirm Buy Event Ticket Settled: Event with Id: {eventId} An error occurred: {result}");
                     return BadRequest(new ErrorResponse { ErrorDescription = result });
                 }
                 var (verifiedDto,message, IsCompleted) = await _attendeeRepo.VerifyTicketPaymentAsync(reBuyTicketDto.TransactionId);
                 if (!IsCompleted)
                 {
+                    _logger.LogError($"Confirm Buy Event Ticket Settled: Event with Id: {eventId} An error occurred: {message}");
                     return BadRequest(new ErrorResponse { ErrorDescription = message });
                 }
 
                 if (verifiedDto?.Status != null && verifiedDto.Status != "success" &&
                     verifiedDto?.Message == "Transaction fetched successfully")
                 {
+                    _logger.LogError($"Confirm Buy Event Ticket Settled: Event with Id: {eventId} An error occurred: Payment is not found for {reBuyTicketDto.TransactionId}");
                     return BadRequest(new ErrorResponse { ErrorDescription = $"Payment is not found for {reBuyTicketDto.TransactionId}" });
                 }
 
@@ -156,10 +164,94 @@ namespace backend.Controllers
                 return StatusCode((int)HttpStatusCode.OK, new MessageResponse(response));
             }catch(Exception ex){
                 await transaction.RollbackAsync();
+                _logger.LogCritical($"Confirm Buy Event Ticket Settled: Event with Id: {eventId} An error occurred: {ex.Message}");
                 return StatusCode((int)HttpStatusCode.InternalServerError, new ErrorResponse { ErrorDescription = $"{ex.Message}" });
             
             }
         }
+
+        [HttpPost("attendee/event/{eventId:int}/tickets/details")]
+        [ProducesResponseType(typeof(List<AttendeeTicketListDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetEventFeedbackDetailsAsync([FromRoute] int eventId, [FromBody] AttendeeEmailDto emailDto){
+            var (eventFeedbacksDetailsDto, message) = await _attendeeRepo.AttendeeGetEventTicketDetailsAsync(emailDto,eventId);
+            if (eventFeedbacksDetailsDto == null)
+            {
+                 _logger.LogError($"Attendee Get Event Ticket Details List:  Event with Id: {eventId}_{message} ");
+                return BadRequest(new ErrorResponse { ErrorDescription = message});
+            }
+
+            return StatusCode((int)HttpStatusCode.OK, eventFeedbacksDetailsDto);
+        }
+
+        [HttpGet("event/{eventId:int}/details")]
+        [ProducesResponseType(typeof(List<AttendeeEventDetailsDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> AttendeeGetEventsDetails([FromRoute] int eventId){
+            var (eventDetailsDto, IsSuccess) = await _attendeeRepo.AttendeeGetEventDetailsAsync(eventId);
+            if (!IsSuccess)
+            {
+                _logger.LogError($"Event Details: Event with Id: {eventId} not found");
+                return BadRequest(new ErrorResponse { ErrorDescription = $"Event not found" });
+            }
+
+            return StatusCode((int)HttpStatusCode.OK, eventDetailsDto);
+        }
+
+        [HttpGet("list/event")]
+        [ProducesResponseType(typeof(List<AttendeeEventsListDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        public async Task<IActionResult> AttendeeListEvents([FromQuery] AttendeeListEventQuery query){
+            var listEvent = await _attendeeRepo.AttendeesEventsListAsync(query);
+            if (listEvent == null)
+            {
+                _logger.LogInformation($"List Event: NoContent");
+                return NoContent();
+            }
+            
+            return StatusCode((int)HttpStatusCode.OK, listEvent);
+            
+        }
+
+        [HttpPost("create/event/{eventId:int}/feedback")]
+        [ProducesResponseType(typeof(MessageResponse), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> CreateEventFeedback([FromBody] AttendeeCreateFeedback createFeedback, [FromRoute] int eventId)
+        {
+            try
+            {
+                var (message, createFeedbacks) = await _attendeeRepo.AttendeeCreateFeedbacks(createFeedback,eventId);
+                if (!createFeedbacks)
+                {
+                    _logger.LogError($"create Event Feedbacks: An error occurred: {message} for {createFeedback.Email}");
+                    return BadRequest(new ErrorResponse { ErrorDescription = message });
+                }
+                _logger.LogInformation($"create Event Feedbacks: {message} for {createFeedback.Email}");
+                return StatusCode((int)HttpStatusCode.Created, new MessageResponse(message));
+            }
+            catch (InvalidInputException ex)
+            {
+                _logger.LogCritical($"create Event Feedbacks: An error occurred: {ex.Message} for {createFeedback.Email}");
+                return BadRequest(new ErrorResponse { ErrorDescription = ex.Message });
+            }
+        }
+
+        [HttpPost("refund/ticket/{ticketId:int}/ticket")]
+        [ProducesResponseType(typeof(MessageResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> CreateEventFeedback([FromBody] AttendeeEmailDto emailDto, [FromRoute] int ticketId)
+        {
+            var (message, IsSuccess) = await _attendeeRepo.RefundTicketPayment(emailDto, ticketId);
+            if (!IsSuccess)
+            {
+                _logger.LogError($"Refund ticket payment: {message}");
+                return BadRequest(new ErrorResponse { ErrorDescription = message });
+            }
+
+            return StatusCode((int)HttpStatusCode.OK, new MessageResponse(message));
+        }
+
+
 
 
 

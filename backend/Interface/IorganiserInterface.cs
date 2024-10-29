@@ -16,12 +16,12 @@ namespace backend.Interface
             UpdateEventDto updateEventDto, 
             int id, string userId);
         Task<(OrganizerEventDetailsDto? eventDetailsDto, bool IsSuccess)> GetEventDetailsAsync(
-            int id, string userId);
+            int id, string userId, HttpRequest request);
         Task<(string message, bool IsSuccess)> DeleteEventAsync (
             int id, string userId);
         Task<List<organizerEventsDto>?> OrganizerEventsAsync (
             string userId, 
-            OrganizerListEventQuery query);
+            OrganizerListEventQuery query, HttpRequest request);
         Task<(string message, Session? session)> CreateEventSessionAsync (
             CreateEventSessionDto createEventSessionDto, 
             int id, string userId);

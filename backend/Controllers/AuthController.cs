@@ -28,12 +28,14 @@ namespace backend.Controllers
         public readonly IAuthInterface _authRepo;
         public readonly IJWTService _token;
         private readonly StateLgaService _stateLgaService;
+        private readonly ILogger<AuthController> _logger;
 
         public AuthController(
             DBContext context,
             UserManager<User> userManager,
             IAuthInterface authRepo,
-            IJWTService token
+            IJWTService token,
+            ILogger<AuthController> logger
 
         )
         {
@@ -42,6 +44,7 @@ namespace backend.Controllers
             _authRepo = authRepo;
             _token = token;
             _stateLgaService = new StateLgaService();
+            _logger = logger;
         }
 
 
@@ -57,19 +60,19 @@ namespace backend.Controllers
                 var (message, user) = await _authRepo.CreateAdminUserAsync(adminDto);
                 if (user == null) // Check if user creation failed
                 {
+                    _logger.LogError($"Create Admin: An error occurred: {message}");
                     return BadRequest(new ErrorResponse { ErrorDescription = message });
                 }
 
-                // Return a successful response with the user object
                 return StatusCode((int)HttpStatusCode.Created, new MessageResponse(message));
             }catch (InvalidInputException ex)
             {
-                // Return a Bad Request response for input validation errors
+                _logger.LogError($"Create Admin: An error occurred: {ex.Message}");
                 return BadRequest(new { error_description = ex.Message });
             }
             catch (Exception ex)
             {
-                // _logger.LogError(ex, "An error occurred while creating an admin.");
+                _logger.LogError($"Create Admin: An error occurred: {ex}");
                 return StatusCode((int)HttpStatusCode.InternalServerError, new ErrorResponse { ErrorDescription = $"{ex}" });
             }
         }
@@ -84,6 +87,7 @@ namespace backend.Controllers
             {
                 return Ok(new MessageResponse(message));
             }
+            _logger.LogError($"Verify Otp: An error occurred: {message}");
             return BadRequest(new ErrorResponse { ErrorDescription = message });
 
         }
@@ -97,6 +101,7 @@ namespace backend.Controllers
             {
                 return Ok(new MessageResponse(message));
             }
+             _logger.LogError($"Resend Otp: An error occurred: {message}");
             return BadRequest(new ErrorResponse { ErrorDescription = message });
         }
 
@@ -110,6 +115,7 @@ namespace backend.Controllers
             {
                 return Ok(new MessageResponse(message));
             }
+             _logger.LogError($"Forgot Password: An error occurred: {message}");
             return BadRequest(new ErrorResponse { ErrorDescription = message });
 
         }
@@ -123,6 +129,7 @@ namespace backend.Controllers
             {
                 return Ok(new MessageResponse(message));
             }
+             _logger.LogError($"Reset Password: An error occurred: {message}");
             return BadRequest(new ErrorResponse { ErrorDescription = message });
         }
 
@@ -144,6 +151,7 @@ namespace backend.Controllers
                     token = _token.CreateJwtTokenAsync(user),
                     });
             }
+             _logger.LogError($"Login: An error occurred: {message}");
             return BadRequest(new ErrorResponse { ErrorDescription = message });
             
         }
@@ -164,7 +172,8 @@ namespace backend.Controllers
             var lgas = _stateLgaService.GetLgasByStateId(stateId);
             if (lgas == null || !lgas.Any())
             {
-                return BadRequest(new ErrorResponse { ErrorDescription = $"No LGAs found for state with ID {stateId}" });
+                 _logger.LogError($"List State Lga: An error occurred: No Lgas found");
+                return BadRequest(new ErrorResponse { ErrorDescription = $"No LGAs found" });
             }
             return Ok(lgas);
         }

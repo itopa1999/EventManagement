@@ -12,8 +12,8 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20241021221627_state")]
-    partial class state
+    [Migration("20241026101424_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,19 +54,19 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "48a952c5-e0f9-4638-8e38-adc6ec0d2f4f",
+                            Id = "6f2a9016-f58f-4a4b-835e-4193a815c08e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "e9c2c398-4d19-49d2-a709-24681b0d2a2a",
+                            Id = "c641c8c7-1789-46d3-9c5d-9ffbd4537a42",
                             Name = "Organizer",
                             NormalizedName = "ORGANIZER"
                         },
                         new
                         {
-                            Id = "eedec756-2bb8-457e-9bc9-c329a8ada1d7",
+                            Id = "c7f36bfd-6383-4d97-8652-b0390ccf8b09",
                             Name = "Attendee",
                             NormalizedName = "ATTENDEE"
                         });
@@ -195,6 +195,9 @@ namespace backend.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsBlock")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
@@ -234,6 +237,18 @@ namespace backend.Migrations
                     b.Property<int>("EventType")
                         .HasColumnType("int");
 
+                    b.Property<bool>("HasPayment")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsBlock")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsInvitationOnly")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
 
@@ -243,6 +258,9 @@ namespace backend.Migrations
                     b.Property<string>("OrganizerId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
@@ -250,6 +268,9 @@ namespace backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("TemplateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TicketType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -465,6 +486,9 @@ namespace backend.Migrations
                     b.Property<int>("EventId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("HasSent")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("ReminderTime")
                         .HasColumnType("datetime2");
 
@@ -516,7 +540,7 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AttendeeId")
+                    b.Property<int?>("AttendeeId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CheckedInAt")
@@ -528,7 +552,7 @@ namespace backend.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("TicketType")
+                    b.Property<int?>("TicketType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -536,6 +560,37 @@ namespace backend.Migrations
                     b.HasIndex("AttendeeId");
 
                     b.ToTable("Tickets");
+                });
+
+            modelBuilder.Entity("backend.Models.Transaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ref")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("backend.Models.User", b =>
@@ -568,6 +623,9 @@ namespace backend.Migrations
 
                     b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsBlock")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LGA")
                         .HasColumnType("nvarchar(max)");
@@ -652,6 +710,9 @@ namespace backend.Migrations
 
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsBlock")
+                        .HasColumnType("bit");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -834,8 +895,7 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.Attendee", "Attendee")
                         .WithMany("Tickets")
                         .HasForeignKey("AttendeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Attendee");
                 });

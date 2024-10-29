@@ -17,7 +17,7 @@ namespace backend.Models
         public string? Address { get; set; }
         public string? Gender { get; set; }
         public UserType UserType { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = TimeHelper.GetNigeriaTime();
         public bool IsBlock { get; set; } = false;
         public ICollection<Event>? Events { get; set; }
         public string? OtpId { get; set; }
@@ -32,7 +32,7 @@ namespace backend.Models
         public int Token { get; set; }
         public string? Question { get; set; }
         public string? Answer { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = TimeHelper.GetNigeriaTime();
         public bool IsActive { get; set; } = true;
         public string? UserId { get; set; }
         public User? User { get; set; }
@@ -63,8 +63,9 @@ namespace backend.Models
         public ICollection<Invitation>? Invitations { get; set; } = new List<Invitation>();// Related Invitations
         public ICollection<Reminder>? Reminders { get; set; } = new List<Reminder>();// Related Reminders
         public ICollection<Feedback>? Feedbacks { get; set; } = new List<Feedback>();// Related Feedbacks
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = TimeHelper.GetNigeriaTime();
         public bool IsBlock { get; set; } = false;
+        public string? ImagePath { get; set; }
     }
 
 
@@ -105,7 +106,7 @@ namespace backend.Models
         public Event? Event { get; set; } // Navigation property to the Event
         public ICollection<Ticket>? Tickets { get; set; } = new List<Ticket>();// Related Tickets
         public string? QRCode { get; set; } // QR Code string for check-in
-        public DateTime RegisteredAt { get; set; } = DateTime.Now; // Date and time of registration
+        public DateTime RegisteredAt { get; set; } = TimeHelper.GetNigeriaTime(); // Date and time of registration
         public bool IsBlock { get; set; } = false;
     }
 
@@ -171,7 +172,7 @@ namespace backend.Models
         public string? AttendeeEmail { get; set; }
         public string? Comments { get; set; }
         public int Rating { get; set; } // Rating scale, e.g., 1-5
-        public DateTime SubmittedAt { get; set; }
+        public DateTime SubmittedAt { get; set; } = TimeHelper.GetNigeriaTime();
 
         // Navigation property
         public Event? Event { get; set; }
@@ -182,7 +183,7 @@ namespace backend.Models
     {
         public int Id { get; set; } // Primary Key
         public string? UserId { get; set; } // Foreign key for the User
-        public DateTime AttemptedAt { get; set; } = DateTime.Now; // Timestamp of the attempt
+        public DateTime AttemptedAt { get; set; } = TimeHelper.GetNigeriaTime(); // Timestamp of the attempt
         public bool IsSuccessful { get; set; } // Indicates if the login was successful
         public string? IpAddress { get; set; } // IP address of the user attempting to log in
 

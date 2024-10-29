@@ -2,8 +2,10 @@ using backend.Data;
 using backend.Dtos;
 using backend.Helpers;
 using backend.Interface;
+using backend.Mappers;
 using backend.Models;
 using backend.Services;
+using Hangfire.States;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -61,7 +63,7 @@ namespace backend.Repository
             if (!await eventId.IsValidEventAttendee(_context))
                 return ($"Event does not exists.", null);
             if (await attendeeRegisterDto.Email.IsValidEventRegistered(eventId, _context))
-                return ($"You have already registered for this event id: {eventId}", null);
+                return ($"You have already registered for this event", null);
             var eventModel = await _context.Events.FindAsync(eventId);
             if (eventModel.IsInvitationOnly){
                 var invitationModel = await _context.Invitations
@@ -89,10 +91,11 @@ namespace backend.Repository
             // var email = "salawulucky08071@gmail.com";
             // await _emailService.SendEmailAsync(email, subject, body);
 
-            return ($"Attendee registered successfully for event id: {eventId}", attendeeModel);
+            return ($"Attendee registered successfully for event", attendeeModel);
         }
 
-        public async Task<(string message, BuyTicketCondition ticketCondition)> AttendeeBuyTicketAsync(AttendeeBuyTicketDto AttendeeBuyTicketDto, int eventId)
+        public async Task<(string message, BuyTicketCondition ticketCondition)> AttendeeBuyTicketAsync(
+            AttendeeBuyTicketDto AttendeeBuyTicketDto, int eventId, HttpRequest request)
         {
             var properties = typeof(AttendeeBuyTicketDto).GetProperties();
             foreach (var property in properties)
@@ -113,7 +116,7 @@ namespace backend.Repository
             if (!await eventId.IsValidEventAttendee(_context))
                 return ($"Event does not exists.", BuyTicketCondition.error);
             if (!await AttendeeBuyTicketDto.Email.IsValidEventRegistered(eventId, _context))
-                return ($"You have not registered for this event id: {eventId}", BuyTicketCondition.error);
+                return ($"You have not registered for this event", BuyTicketCondition.error);
             var ticket = await _context.Tickets.FirstOrDefaultAsync(x=>x.Attendee.Email == AttendeeBuyTicketDto.Email
             && x.IsCheckedIn == false);
             if (ticket != null)
@@ -127,9 +130,9 @@ namespace backend.Repository
                     TicketType = eventModel?.TicketType,
                     Price = eventModel.Price,
                 };
-                return ($"Event Ticket successfully purchased because it is free for event id: {eventId}", BuyTicketCondition.create);
+                return ($"Event Ticket successfully purchased because it is free for event", BuyTicketCondition.create);
             }
-            var result = await _flutterRepo.InitializePayment(eventModel.Price, attendee, eventId);
+            var result = await _flutterRepo.InitializePayment(eventModel.Price, attendee, eventId, request);
             return ($"{result}", BuyTicketCondition.flutter);
 
         }
@@ -250,7 +253,7 @@ namespace backend.Repository
             if (!await eventId.IsValidEventAttendee(_context))
                 return ($"Event does not exists.", false);
             if (!await reBuyTicketDto.Email.IsValidEventRegistered(eventId, _context))
-                return ($"You have not registered for this yet event id: {eventId}", false);
+                return ($"You have not registered for this event yet", false);
 
             var validPayment = await _context.Payments.FirstOrDefaultAsync(x=>x.EventId==eventId && x.TransactionId == reBuyTicketDto.TransactionId);
             if(validPayment != null)
@@ -258,6 +261,145 @@ namespace backend.Repository
             return ($"Proceeding", true);
             
             
+        }
+
+        public async Task<(List<AttendeeTicketListDto>? ticketListDtos, string message)> AttendeeGetEventTicketDetailsAsync(AttendeeEmailDto emailDto, int eventId)
+        {
+            if(string.IsNullOrEmpty(emailDto.Email.Trim())){
+                return (null, "Email cannot be empty");
+            }
+            if (!StringHelpers.IsValidEmail(emailDto.Email.Trim()))
+            {
+                return (null, $"Invalid email {emailDto.Email}");
+            }
+            if (!await eventId.IsValidEventAttendee(_context))
+                return (null, $"Event does not exists.");
+            if (!await emailDto.Email.IsValidEventRegistered(eventId, _context))
+                return (null, $"You have not registered for this event");
+            var tickets = await _context.Tickets
+            .Where(x=>x.Attendee.Email == emailDto.Email && x.Attendee.EventId == eventId)
+            .Include(x=>x.Payments)
+            .ToListAsync();
+            var ticketsDto = tickets?.Select(x=>x.ToAttendeeTicketListDto()).ToList();
+            return (ticketsDto, "Ok");
+        
+            
+        }
+
+        public async Task<List<AttendeeEventsListDto>?> AttendeesEventsListAsync(AttendeeListEventQuery query)
+        {
+            var eventLists = _context.Events
+            .OrderByDescending(x=>x.CreatedAt)
+            .AsQueryable();
+
+            if(!string.IsNullOrWhiteSpace(query.Name))
+            {
+                eventLists = eventLists.Where(x=>x.Name.Contains(query.Name));
+            };
+            if(query.EventType != null)
+            {
+                eventLists = eventLists.Where(x=>x.EventType ==query.EventType);
+            };
+            if(!string.IsNullOrWhiteSpace(query.State))
+            {
+                    eventLists = eventLists.Where(x=>x.State.Contains(query.State));
+            };
+            if(!string.IsNullOrWhiteSpace(query.Location))
+            {
+                    eventLists = eventLists.Where(x=>x.Location.Contains(query.Location));
+            };
+
+            if (query.StartDate.HasValue)
+            {
+                eventLists = eventLists.Where(x =>x.StartDate.Date == query.StartDate.Value.Date);
+            };
+            if (query.EndDate.HasValue)
+            {
+                eventLists = eventLists.Where(x => x.EndDate.Date == query.EndDate.Value.Date);
+            }
+
+            var eventListDtos = eventLists
+                .Select(x => x.ToAttendeeEventsListDto());
+
+            var SkipNumber = (query.PageNumber - 1) * query.PageSize;
+            return await eventListDtos.Skip(SkipNumber).Take(query.PageSize).ToListAsync();
+        }
+
+        public async Task<(AttendeeEventDetailsDto? attendeeEventDetails, bool IsSuccess)> AttendeeGetEventDetailsAsync(int eventId)
+        {
+            if (!await eventId.IsValidEventAttendee(_context))
+                return (null, false);
+            var existingEvent = await _context.Events
+            .Include(x=>x.Sessions)
+            .Include(x=>x.Feedbacks)
+            .FirstOrDefaultAsync(x=>x.Id == eventId);
+
+            var eventDetailsDto = existingEvent?.ToAttendeeEventDetailsDto();
+            return (eventDetailsDto, true);
+            
+        }
+
+        public async Task<(string message, bool IsSuccess)> AttendeeCreateFeedbacks (AttendeeCreateFeedback createFeedback, int eventId)
+        {
+            var properties = typeof(AttendeeCreateFeedback).GetProperties();
+            foreach (var property in properties)
+            {
+                if (property.PropertyType == typeof(string))
+                {
+                    var value = (string?)property.GetValue(createFeedback);
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        return ($"{property.Name} cannot be empty.", false);
+                    }
+                }
+            }
+            if (!int.TryParse(createFeedback.Rating.ToString(), out int rating) || rating < 1 || rating > 5)
+            {
+                return ("Rating must be an integer between 1 and 5", false);
+            }
+            if (!StringHelpers.IsValidEmail(createFeedback.Email.Trim()))
+            {
+                return ($"Invalid email {createFeedback.Email}", false);
+            }
+            if (!await eventId.IsValidEventAttendee(_context))
+                return ($"Event does not exists.", false);
+            if (!await createFeedback.Email.IsValidEventRegistered(eventId, _context))
+                return ($"You have to  registered for this event before you can comment", false);
+            int Feedback = await _context.Feedbacks
+            .Where(x=>x.AttendeeEmail == createFeedback.Email)
+            .CountAsync();
+            if (Feedback > 3)
+                return ($"you can only give 3 feedbacks", false);
+            var feedbackModel = new Feedback{
+                AttendeeEmail = createFeedback.Email,
+                Comments = createFeedback.Comments,
+                Rating = createFeedback.Rating,
+                EventId = eventId
+
+            };
+            await _context.Feedbacks.AddAsync(feedbackModel);
+            await _context.SaveChangesAsync();
+
+            return($"feedback added", true);
+
+        }
+
+        public async Task<(string message, bool IsSuccess)> RefundTicketPayment(AttendeeEmailDto emailDto, int id)
+        {
+            if(string.IsNullOrEmpty(emailDto.Email.Trim())){
+                return ("Email cannot be empty", false);
+            }
+            if (!StringHelpers.IsValidEmail(emailDto.Email.Trim()))
+            {
+                return ($"Invalid email {emailDto.Email}", false);
+            }
+            var ticket = await _context.Tickets.FirstOrDefaultAsync(x=>x.Attendee.Email == emailDto.Email && x.Id == id);
+            if(ticket == null)
+                return ($"ticket cannot be found", false);
+            if (ticket.IsCheckedIn == true)
+                return ("ticket has been used", false);
+            return("ok", true);
+
         }
     }
 }

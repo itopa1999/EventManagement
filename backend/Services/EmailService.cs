@@ -7,10 +7,12 @@ using backend.Dtos;
 public class EmailService
 {
     private readonly SmtpSettingsDto _smtpSettings;
+    private readonly ILogger<EmailService> _logger;
 
-    public EmailService(IOptions<SmtpSettingsDto> smtpSettings)
+    public EmailService(IOptions<SmtpSettingsDto> smtpSettings,ILogger<EmailService> logger)
     {
         _smtpSettings = smtpSettings.Value;
+        _logger = logger;
     }
 
     public async Task SendEmailAsync(string toEmail, string subject, string body)
@@ -20,7 +22,10 @@ public class EmailService
         message.To.Add(new MailboxAddress("", toEmail));
         message.Subject = subject;
         message.Body = new TextPart("html") { Text = body };
-        Console.WriteLine(message);
+        Console.WriteLine($"From: {message.From}");
+        Console.WriteLine($"To: {message.To}");
+        Console.WriteLine($"Subject: {message.Subject}");
+        Console.WriteLine($"Body: {message.Body}");
 
         using (var client = new SmtpClient())
         {
@@ -32,7 +37,7 @@ public class EmailService
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to send email: {ex.Message}");
+                _logger.LogError($"Failed to send email: {ex.Message}");
             }
             finally
             {
