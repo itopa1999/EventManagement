@@ -9,6 +9,7 @@
       "backend/1.0.0": {
         "dependencies": {
           "CsvHelper": "33.0.1",
+          "DeviceDetector.NET": "6.3.3",
           "ExcelDataReader": "3.7.0",
           "Hangfire": "1.8.15",
           "Hangfire.SqlServer": "1.8.15",
@@ -82,6 +83,20 @@
           "lib/net8.0/CsvHelper.dll": {
             "assemblyVersion": "33.0.0.0",
             "fileVersion": "33.0.1.24"
+          }
+        }
+      },
+      "DeviceDetector.NET/6.3.3": {
+        "dependencies": {
+          "LiteDB": "5.0.19",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.2",
+          "Newtonsoft.Json": "13.0.3",
+          "YamlDotNet": "15.1.2"
+        },
+        "runtime": {
+          "lib/net8.0/DeviceDetector.NET.dll": {
+            "assemblyVersion": "6.3.3.0",
+            "fileVersion": "6.3.3.0"
           }
         }
       },
@@ -196,6 +211,14 @@
           "lib/net6.0/Humanizer.dll": {
             "assemblyVersion": "2.14.0.0",
             "fileVersion": "2.14.1.48190"
+          }
+        }
+      },
+      "LiteDB/5.0.19": {
+        "runtime": {
+          "lib/netstandard2.0/LiteDB.dll": {
+            "assemblyVersion": "5.0.19.0",
+            "fileVersion": "5.0.19.0"
           }
         }
       },
@@ -1313,6 +1336,14 @@
           }
         }
       },
+      "YamlDotNet/15.1.2": {
+        "runtime": {
+          "lib/net8.0/YamlDotNet.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "15.1.2.0"
+          }
+        }
+      },
       "ZXing.Net/0.16.9": {
         "runtime": {
           "lib/net7.0/zxing.dll": {
@@ -1356,6 +1387,13 @@
       "sha512": "sha512-fev4lynklAU2A9GVMLtwarkwaanjSYB4wUqO2nOJX5hnzObORzUqVLe+bDYCUyIIRQM4o5Bsq3CcyJR89iMmEQ==",
       "path": "csvhelper/33.0.1",
       "hashPath": "csvhelper.33.0.1.nupkg.sha512"
+    },
+    "DeviceDetector.NET/6.3.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-jSquN8aHkpImKKB4c0D+aMq49ues3KFizJ5J8exG8au/+kZ7VHC4/Sjlmaa3Xfd1Dw5hn+dIcZmyMpYqBl/fsg==",
+      "path": "devicedetector.net/6.3.3",
+      "hashPath": "devicedetector.net.6.3.3.nupkg.sha512"
     },
     "ExcelDataReader/3.7.0": {
       "type": "package",
@@ -1405,6 +1443,13 @@
       "sha512": "sha512-lQKvtaTDOXnoVJ20ibTuSIOf2i0uO0MPbDhd1jm238I+U/2ZnRENj0cktKZhtchBMtCUSRQ5v4xBCUbKNmyVMw==",
       "path": "humanizer.core/2.14.1",
       "hashPath": "humanizer.core.2.14.1.nupkg.sha512"
+    },
+    "LiteDB/5.0.19": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-O8XPBptE4SygW2SN6skqg/VDVTrjpJ0p6+i7Cp8x8razbu2ORLSd6ep3JdhDIdL6h57Bcxv2BuVaN70IKpXI0Q==",
+      "path": "litedb/5.0.19",
+      "hashPath": "litedb.5.0.19.nupkg.sha512"
     },
     "MailKit/4.8.0": {
       "type": "package",
@@ -2126,6 +2171,13 @@
       "sha512": "sha512-IXoJOXIqc39AIe+CIR7koBtRGMiCt/LPM3lI+PELtDIy9XdyeSrwXFdWV9dzJ2Awl0paLWUaknLxFQ5HpHZUog==",
       "path": "system.windows.extensions/6.0.0",
       "hashPath": "system.windows.extensions.6.0.0.nupkg.sha512"
+    },
+    "YamlDotNet/15.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-qeX0XhzOIcQEvnI5JxnPaIwcINwyY4Qy/LXhSfsdHkFrl9F41AT52UFfy2nIE7kgrhMg+cP7xuS+GtPJhmHmTA==",
+      "path": "yamldotnet/15.1.2",
+      "hashPath": "yamldotnet.15.1.2.nupkg.sha512"
     },
     "ZXing.Net/0.16.9": {
       "type": "package",

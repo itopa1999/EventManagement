@@ -27,6 +27,8 @@ namespace backend.Data
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Otp> Otps { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
+        public DbSet<UserDevice> UserDevices { get; set; }
+        public DbSet<AccessToken> AccessToken { get; set; }
 
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

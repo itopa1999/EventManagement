@@ -61,6 +61,8 @@ namespace backend.Interface
         Task<(List<OrganizerFeedbackListDto>? feedbackListDto, bool IsSuccess)> GetEventRatingDetailsAsync (
             int eventId, string userId);
         Task<(OrganizerWalletTransactionsDto?, bool IsSuccess)> GetWalletTransactionsAsync (string userId);
+        Task<(List<OrganizerDevicesDto>?, bool IsSuccess)> GetDevicesListAsync(string userId);
+        Task<(string message, bool IsSuccess)> DeleteDeviceAsync(string userId, int id);
 
             
 

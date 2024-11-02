@@ -7,6 +7,9 @@ using backend.Helpers;
 using backend.Interface;
 using backend.Models;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Cryptography;
+
+
 
 namespace backend.Services
 {
@@ -78,6 +81,30 @@ namespace backend.Services
             string password = capitalLetter.ToString() + digit + new string(lowercaseLetters);
             return new string(password.OrderBy(c => random.Next()).ToArray());
         }
+
+        public string GenerateAccessToken()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+            var tokenBuilder = new StringBuilder();
+            using (var crypto = new RNGCryptoServiceProvider())
+            {
+                byte[] byteBuffer = new byte[1];
+
+                while (tokenBuilder.Length < 300)
+                {
+                    crypto.GetBytes(byteBuffer);
+                    char c = (char)byteBuffer[0];
+                    
+                    if (chars.Contains(c))
+                    {
+                        tokenBuilder.Append(c);
+                    }
+                }
+            }
+
+            return tokenBuilder.ToString();
+        }
+
 
         
     }

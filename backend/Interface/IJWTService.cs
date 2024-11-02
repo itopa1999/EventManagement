@@ -10,5 +10,6 @@ namespace backend.Interface
     {
         int GenerateToken();
         string? CreateJwtTokenAsync (User user);
+        string? GenerateAccessToken();
     }
 }

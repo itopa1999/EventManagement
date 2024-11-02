@@ -25,6 +25,14 @@ namespace backend.Models
         
     }
 
+    public class AccessToken
+    {
+        public int Id { get; set; }
+        public string? AccessTok { get; set; }
+        public bool IsActive { get; set; } = true;
+        public DateTime CreatedAt { get; set; } = TimeHelper.GetNigeriaTime();
+    }
+
 
     public class Otp
     {
@@ -211,6 +219,19 @@ namespace backend.Models
         public TransactionType Type { get; set; }
         public DateTime Date { get; set; }
 
+    }
+
+    public class UserDevice
+    {
+        public int Id { get; set; }
+        public string? UserId { get; set; }
+        public User? User { get; set; }
+        public string? Client { get; set; }
+        public string? OS { get; set; }
+        public string? Device { get; set; }
+        public string? Brand { get; set; }
+        public string? Model { get; set; }
+        public DateTime LoginDate { get; set; } = TimeHelper.GetNigeriaTime();
     }
 
 

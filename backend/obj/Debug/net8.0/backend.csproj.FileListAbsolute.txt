@@ -181,3 +181,6 @@ C:\Users\FMY-381\Desktop\projects\EventManagement\backend\obj\Debug\net8.0\refin
 C:\Users\FMY-381\Desktop\projects\EventManagement\backend\obj\Debug\net8.0\backend.pdb
 C:\Users\FMY-381\Desktop\projects\EventManagement\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 C:\Users\FMY-381\Desktop\projects\EventManagement\backend\obj\Debug\net8.0\ref\backend.dll
+C:\Users\FMY-381\Desktop\projects\EventManagement\backend\bin\Debug\net8.0\DeviceDetector.NET.dll
+C:\Users\FMY-381\Desktop\projects\EventManagement\backend\bin\Debug\net8.0\LiteDB.dll
+C:\Users\FMY-381\Desktop\projects\EventManagement\backend\bin\Debug\net8.0\YamlDotNet.dll

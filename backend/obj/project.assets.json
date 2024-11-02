@@ -72,6 +72,21 @@
           }
         }
       },
+      "DeviceDetector.NET/6.3.3": {
+        "type": "package",
+        "dependencies": {
+          "LiteDB": "5.0.19",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.1",
+          "Newtonsoft.Json": "13.0.3",
+          "YamlDotNet": "15.1.2"
+        },
+        "compile": {
+          "lib/net8.0/DeviceDetector.NET.dll": {}
+        },
+        "runtime": {
+          "lib/net8.0/DeviceDetector.NET.dll": {}
+        }
+      },
       "ExcelDataReader/3.7.0": {
         "type": "package",
         "compile": {
@@ -216,6 +231,19 @@
         },
         "runtime": {
           "lib/net6.0/Humanizer.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "LiteDB/5.0.19": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/LiteDB.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/LiteDB.dll": {
             "related": ".xml"
           }
         }
@@ -2174,6 +2202,19 @@
           }
         }
       },
+      "YamlDotNet/15.1.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/YamlDotNet.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/YamlDotNet.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "ZXing.Net/0.16.9": {
         "type": "package",
         "compile": {
@@ -2274,6 +2315,26 @@
         "lib/netstandard2.0/CsvHelper.xml",
         "lib/netstandard2.1/CsvHelper.dll",
         "lib/netstandard2.1/CsvHelper.xml"
+      ]
+    },
+    "DeviceDetector.NET/6.3.3": {
+      "sha512": "jSquN8aHkpImKKB4c0D+aMq49ues3KFizJ5J8exG8au/+kZ7VHC4/Sjlmaa3Xfd1Dw5hn+dIcZmyMpYqBl/fsg==",
+      "type": "package",
+      "path": "devicedetector.net/6.3.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "README.md",
+        "devicedetector.net.6.3.3.nupkg.sha512",
+        "devicedetector.net.nuspec",
+        "lib/net462/DeviceDetector.NET.dll",
+        "lib/net5.0/DeviceDetector.NET.dll",
+        "lib/net6.0/DeviceDetector.NET.dll",
+        "lib/net7.0/DeviceDetector.NET.dll",
+        "lib/net8.0/DeviceDetector.NET.dll",
+        "lib/netstandard2.0/DeviceDetector.NET.dll",
+        "logo.jpg"
       ]
     },
     "ExcelDataReader/3.7.0": {
@@ -2498,6 +2559,26 @@
         "lib/netstandard2.0/Humanizer.dll",
         "lib/netstandard2.0/Humanizer.xml",
         "logo.png"
+      ]
+    },
+    "LiteDB/5.0.19": {
+      "sha512": "O8XPBptE4SygW2SN6skqg/VDVTrjpJ0p6+i7Cp8x8razbu2ORLSd6ep3JdhDIdL6h57Bcxv2BuVaN70IKpXI0Q==",
+      "type": "package",
+      "path": "litedb/5.0.19",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "AppVeyorSettings.json",
+        "LICENSE",
+        "icon_64x64.png",
+        "lib/net45/LiteDB.dll",
+        "lib/net45/LiteDB.xml",
+        "lib/netstandard1.3/LiteDB.dll",
+        "lib/netstandard1.3/LiteDB.xml",
+        "lib/netstandard2.0/LiteDB.dll",
+        "lib/netstandard2.0/LiteDB.xml",
+        "litedb.5.0.19.nupkg.sha512",
+        "litedb.nuspec"
       ]
     },
     "MailKit/4.8.0": {
@@ -5795,6 +5876,31 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "YamlDotNet/15.1.2": {
+      "sha512": "qeX0XhzOIcQEvnI5JxnPaIwcINwyY4Qy/LXhSfsdHkFrl9F41AT52UFfy2nIE7kgrhMg+cP7xuS+GtPJhmHmTA==",
+      "type": "package",
+      "path": "yamldotnet/15.1.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "images/yamldotnet.png",
+        "lib/net47/YamlDotNet.dll",
+        "lib/net47/YamlDotNet.xml",
+        "lib/net6.0/YamlDotNet.dll",
+        "lib/net6.0/YamlDotNet.xml",
+        "lib/net7.0/YamlDotNet.dll",
+        "lib/net7.0/YamlDotNet.xml",
+        "lib/net8.0/YamlDotNet.dll",
+        "lib/net8.0/YamlDotNet.xml",
+        "lib/netstandard2.0/YamlDotNet.dll",
+        "lib/netstandard2.0/YamlDotNet.xml",
+        "lib/netstandard2.1/YamlDotNet.dll",
+        "lib/netstandard2.1/YamlDotNet.xml",
+        "yamldotnet.15.1.2.nupkg.sha512",
+        "yamldotnet.nuspec"
+      ]
+    },
     "ZXing.Net/0.16.9": {
       "sha512": "7WaVMHklpT3Ye2ragqRIwlFRsb6kOk63BOGADV0fan3ulVfGLUYkDi5yNUsZS/7FVNkWbtHAlDLmu4WnHGfqvQ==",
       "type": "package",
@@ -5882,6 +5988,7 @@
   "projectFileDependencyGroups": {
     "net8.0": [
       "CsvHelper >= 33.0.1",
+      "DeviceDetector.NET >= 6.3.3",
       "ExcelDataReader >= 3.7.0",
       "Hangfire >= 1.8.15",
       "Hangfire.SqlServer >= 1.8.15",
@@ -5953,6 +6060,10 @@
           "CsvHelper": {
             "target": "Package",
             "version": "[33.0.1, )"
+          },
+          "DeviceDetector.NET": {
+            "target": "Package",
+            "version": "[6.3.3, )"
           },
           "ExcelDataReader": {
             "target": "Package",

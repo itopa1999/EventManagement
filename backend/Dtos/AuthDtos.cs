@@ -7,7 +7,7 @@ namespace backend.Dtos
 {
     public class CreateAdminDto
     {
-        public string? Username { get; set; }
+        public string? UserName { get; set; }
         public string? Email { get; set; }
         public string? Phone { get; set; }
         public string? FirstName { get; set; }
@@ -21,6 +21,7 @@ namespace backend.Dtos
         public string? SecurityAnswer { get; set; }
         public UserType UserType { get; set; } 
         public string? Password { get; set; }
+        public string? AccessToken { get; set; }
 
     }
 

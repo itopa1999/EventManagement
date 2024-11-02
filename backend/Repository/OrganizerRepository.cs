@@ -18,16 +18,19 @@ namespace backend.Repository
         public readonly DBContext _context;
         private readonly string _mediaFolderPath;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        public readonly UserManager<User> _userManager;
         public OrganizerRepository(
             DBContext context,
             IConfiguration configuration,
-            IWebHostEnvironment webHostEnvironment
+            IWebHostEnvironment webHostEnvironment,
+            UserManager<User> userManager
 
         )
         {
             _context = context;
             _mediaFolderPath = configuration["MediaFolderPath"];
             _webHostEnvironment = webHostEnvironment;
+            _userManager = userManager;
         }
 
         public async Task<List<organizerEventsDto>?> OrganizerEventsAsync(string userId, OrganizerListEventQuery query, HttpRequest request)
@@ -629,5 +632,45 @@ namespace backend.Repository
 
             return (walletTransactionsDto, true);
         }
+
+
+        public async Task<(List<OrganizerDevicesDto>?, bool IsSuccess)> GetDevicesListAsync(string userId)
+        {
+            if (!await userId.IsValidOrganizer(_userManager))
+                return (null, false);
+            var deviceList = await _context.UserDevices
+            .Where(x=>x.UserId == userId)
+            .Select(x=>x.ToOrganizerDevicesDto())
+            .ToListAsync();
+
+            return (deviceList, true);
+        }
+
+
+        public async Task<(string message, bool IsSuccess)> DeleteDeviceAsync(string userId, int id)
+        {
+            if (!await userId.IsValidOrganizer(_userManager))
+                return ("User cannot be found", false);
+            var device = await _context.UserDevices
+            .FirstOrDefaultAsync(x=>x.UserId == userId && x.Id == id);
+            if (device == null)
+            return ("Device cannot be found", false);
+            _context.UserDevices.Remove(device);
+            await _context.SaveChangesAsync();
+            return ("Device deleted successfully", true);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

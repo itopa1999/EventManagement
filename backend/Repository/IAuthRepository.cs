@@ -3,6 +3,8 @@ using backend.Dtos;
 using backend.Helpers;
 using backend.Interface;
 using backend.Models;
+using backend.Services;
+using DeviceDetectorNET;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,11 +16,13 @@ namespace backend.Repository
         public readonly UserManager<User> _userManager;
         public readonly SignInManager<User> _signInManager;
         public readonly IJWTService _token;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public IAuthRepository(
             DBContext context,
             SignInManager<User> signInManager,
             UserManager<User> userManager,
-            IJWTService token
+            IJWTService token,
+            IHttpContextAccessor httpContextAccessor
 
         )
         {
@@ -26,11 +30,17 @@ namespace backend.Repository
             _signInManager = signInManager;
             _userManager = userManager;
             _token = token;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         
         public async Task<(string message, User? user)> CreateAdminUserAsync(CreateAdminDto createAdmin)
         {
+            int userCount = await _userManager.Users
+            .Where(x=>x.UserType == UserType.Admin)
+            .CountAsync();
+            if (userCount >= 3)
+                return ("cannot create more than 3 admins", null);
             var properties = typeof(CreateAdminDto).GetProperties();
             foreach (var property in properties)
             {
@@ -43,11 +53,21 @@ namespace backend.Repository
                     }
                 }
             }
+
+            var access = await _context.AccessToken.FirstOrDefaultAsync(x=>x.AccessTok == createAdmin.AccessToken);
+            
+            if(access == null)
+                return ("Access token is incorrect", null);
+            if(access.IsActive == false)
+                return ("Access token used", null);
+            if(access.CreatedAt.AddMinutes(5) <= TimeHelper.GetNigeriaTime())
+                return ("Access token Expired", null);
+
             if (!StringHelpers.IsValidGender(createAdmin.Gender.Trim()))
                 return ("Gender must be either 'Male' or 'Female'.", null);
-            if (!Enum.IsDefined(typeof(UserType), createAdmin.UserType))
+            if (!Enum.IsDefined(typeof(UserType), createAdmin.UserType) || createAdmin.UserType != UserType.Admin)
             {
-                return ("Invalid user type.", null);
+                return ("Invalid user type or userType not admin.", null);
             }
             string formattedPhone = StringHelpers.FormatPhoneNumber(createAdmin.Phone.Trim());
             bool isValidPhone = StringHelpers.IsValidPhoneNumber(formattedPhone);
@@ -66,7 +86,7 @@ namespace backend.Repository
             }
             var user = new User 
             {
-                UserName = createAdmin.Username,
+                UserName = createAdmin.UserName,
                 Email = createAdmin.Email,
                 PhoneNumber = formattedPhone,
                 FirstName = createAdmin.FirstName,
@@ -101,6 +121,9 @@ namespace backend.Repository
                 Token = _token.GenerateToken()
             };
             await _context.Otps.AddAsync(otp);
+
+            access.IsActive = false;
+
             await _context.SaveChangesAsync();
             Console.WriteLine($"Your otp code is {otp.Token}");
 
@@ -163,14 +186,38 @@ namespace backend.Repository
             if (user == null){
                 return ("incorrect credentials", null);
             }else{
+                var userDeviceCount = _context.UserDevices
+                .Where(d => d.UserId == user.Id && d.User.UserType != UserType.Admin)
+                .Select(d => new { d.Device, d.Brand, d.Model })
+                .Distinct()
+                .Count();
+
+                if (userDeviceCount >= 3)
+                {
+                    return ("You have reached the maximum device limit (3). Please log out from another device.", null);
+
+                }
                 var loginUser = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
-                if (!loginUser.Succeeded){
-                    return ("incorrect credentials", null);
-                }else{
+                if (loginUser.Succeeded){
+                    // await user.Id.DeviceDetails(_httpContextAccessor, _context);
                     return ("login successfully", user);
                 }
+                if (loginUser.IsLockedOut)
+                {
+                    var lockoutEnd = await _userManager.GetLockoutEndDateAsync(user);
+                    if (lockoutEnd.HasValue)
+                    {
+                        var minutesRemaining = (lockoutEnd.Value - DateTimeOffset.Now).TotalMinutes;
+                        return($"You are locked out. Please try again in {Math.Ceiling(minutesRemaining)} minutes.", null);
+                    }
+                }
+
+                await _userManager.AccessFailedAsync(user);
+                return ("incorrect credentials", null);
             }
         }
+
+        
 
         public async Task<(string message, bool isSuccess)> ResendOtpAsync(ResendOtpDto resendOtp)
         {
@@ -281,6 +328,33 @@ namespace backend.Repository
                 return ("OTP verified successfully.", true);          
             }
         }
+
+
+        public async Task<string> GetAccessToken()
+        {
+            var accessToken = await _context.AccessToken.FirstOrDefaultAsync();
+
+            if (accessToken != null)
+            {
+                accessToken.AccessTok = _token.GenerateAccessToken();
+                accessToken.CreatedAt = TimeHelper.GetNigeriaTime();
+                accessToken.IsActive = true;
+                _context.AccessToken.Update(accessToken);
+            }
+            else
+            {
+                accessToken = new AccessToken
+                {
+                    AccessTok = _token.GenerateAccessToken()
+                };
+                await _context.AccessToken.AddAsync(accessToken);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return accessToken.AccessTok;
+        }
+
 
 
 

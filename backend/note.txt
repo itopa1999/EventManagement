@@ -20,6 +20,7 @@ dotnet add package Hangfire
 dotnet add package Hangfire.SqlServer
 dotnet add package Hangfire.AspNetCore
 dotnet add package QRCoder
+dotnet add package DeviceDetector.NET
 
 
 

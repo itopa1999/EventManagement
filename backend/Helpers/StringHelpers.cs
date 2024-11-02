@@ -114,6 +114,15 @@ namespace backend.Helpers
             return false;
         }
 
+        public static bool IsValidBlockStatus(this string status)
+        {
+            if (status != null && (status.Equals("Deactivate", StringComparison.OrdinalIgnoreCase) || status.Equals("Activate", StringComparison.OrdinalIgnoreCase)))
+            {
+                return true;
+            }
+            return false;
+        }
+
 
         public async static Task<string> SaveImage(IFormFile imageFile)
         {

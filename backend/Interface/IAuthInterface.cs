@@ -17,5 +17,6 @@ namespace backend.Interface
         Task<(string message, bool isSuccess)> ForgotPasswordAsync (ForgotPasswordDto forgotPasswordDto);
         Task<(string message, bool isSuccess)> ResetPasswordAsync (ResetPasswordDto resetPasswordDto);
         Task<(string message, User? user)> LoginUserAsync (UserLoginDto loginDto);
+        Task<string> GetAccessToken();
     }
 }   

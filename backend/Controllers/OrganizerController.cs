@@ -441,8 +441,39 @@ namespace backend.Controllers
             return StatusCode((int)HttpStatusCode.OK, walletTransactionsDto);
         }
 
-        
+        [HttpGet("devices/list")]
+        [Authorize]
+        [Authorize(Policy = "IsOrganizer")]
+        [ProducesResponseType(typeof(List<OrganizerDevicesDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> DevicesListAsync(){
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var (deviceList, IsSuccess) = await _organizerRepo.GetDevicesListAsync(userId);
+            if (!IsSuccess)
+            {
+                _logger.LogError($"Get Devices: user not found : userId: {userId}");
+                return BadRequest(new ErrorResponse { ErrorDescription = $"User not found " });
+            }
 
+            return StatusCode((int)HttpStatusCode.OK, deviceList);
+        }
+
+        
+        [HttpDelete("delete/device/{deviceId}")]
+        [Authorize]
+        [Authorize(Policy = "IsOrganizer")]
+        [ProducesResponseType(typeof(MessageResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> DeleteDeviceAsync([FromRoute] int deviceId){
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var (message, IsSuccess) = await _organizerRepo.DeleteDeviceAsync(userId,deviceId);
+            if (!IsSuccess)
+            {
+                _logger.LogError($"Delete Device: error {message}");
+                return BadRequest(new ErrorResponse { ErrorDescription = message});
+            }
+            return StatusCode((int)HttpStatusCode.OK, message);
+        }
 
 
 

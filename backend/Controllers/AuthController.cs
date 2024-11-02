@@ -52,7 +52,6 @@ namespace backend.Controllers
         [ProducesResponseType(typeof(MessageResponse), (int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.InternalServerError)]
-
         public async Task<IActionResult> CreateAdminEP([FromBody] CreateAdminDto adminDto)
         {
             try
@@ -145,7 +144,7 @@ namespace backend.Controllers
                     message = message,
                     firstname = user.FirstName,
                     lastname = user.LastName,
-                    userType = user.UserType,
+                    userType = user.UserType.ToString(),
                     username = user.UserName,
                     email = user.Email,
                     token = _token.CreateJwtTokenAsync(user),
@@ -177,6 +176,21 @@ namespace backend.Controllers
             }
             return Ok(lgas);
         }
+
+
+        [HttpPost("get/jwt/token")]
+        [ProducesResponseType(typeof(MessageResponse), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> GetJwtPassword()
+        {
+            var token = await _authRepo.GetAccessToken();
+            return Ok(new MessageResponse(token));
+        }
+
+
+
+
+
+
 
 
 

@@ -32,6 +32,8 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.SupportedUICultures = cultures;
 });
 
+builder.Services.AddHttpContextAccessor();
+
 // Log.Logger = new LoggerConfiguration()
 //     .WriteTo.File("Helpers/Logs/logfile.txt", rollingInterval: RollingInterval.Day)
 //     .CreateLogger();
@@ -103,6 +105,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 
+
 // //User-Setting and JWT Authentication
 builder.Services.AddIdentity<User, IdentityRole>(options => {
     options.Password.RequireDigit = true;
@@ -110,8 +113,8 @@ builder.Services.AddIdentity<User, IdentityRole>(options => {
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = false;
 
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(40); // Lockout duration (e.g., 15 minutes)
-    options.Lockout.MaxFailedAccessAttempts = 4;  // Number of failed attempts before lockout
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(40);
+    options.Lockout.MaxFailedAccessAttempts = 4;
     options.Lockout.AllowedForNewUsers = true;
 
 }).AddEntityFrameworkStores<DBContext>()

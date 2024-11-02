@@ -50,6 +50,10 @@
               "target": "Package",
               "version": "[33.0.1, )"
             },
+            "DeviceDetector.NET": {
+              "target": "Package",
+              "version": "[6.3.3, )"
+            },
             "ExcelDataReader": {
               "target": "Package",
               "version": "[3.7.0, )"

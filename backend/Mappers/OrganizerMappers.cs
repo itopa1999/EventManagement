@@ -145,7 +145,18 @@ namespace backend.Mappers
             };
         }
     
+        public static OrganizerDevicesDto ToOrganizerDevicesDto(this UserDevice userDevice){
+            return new OrganizerDevicesDto{
+                Id = userDevice.Id,
+                UserId = userDevice.UserId,
+                Client = userDevice.Client,
+                Device = userDevice.Device,
+                Brand = userDevice.Brand,
+                Model = userDevice.Model
+                
 
+            };
+        }
 
 
 
