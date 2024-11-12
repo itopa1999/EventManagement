@@ -184,3 +184,7 @@ C:\Users\FMY-381\Desktop\projects\EventManagement\backend\obj\Debug\net8.0\ref\b
 C:\Users\FMY-381\Desktop\projects\EventManagement\backend\bin\Debug\net8.0\DeviceDetector.NET.dll
 C:\Users\FMY-381\Desktop\projects\EventManagement\backend\bin\Debug\net8.0\LiteDB.dll
 C:\Users\FMY-381\Desktop\projects\EventManagement\backend\bin\Debug\net8.0\YamlDotNet.dll
+C:\Users\FMY-381\Desktop\projects\EventManagement\backend\bin\Debug\net8.0\Dapper.dll
+C:\Users\FMY-381\Desktop\projects\EventManagement\backend\bin\Debug\net8.0\Hangfire.PostgreSql.dll
+C:\Users\FMY-381\Desktop\projects\EventManagement\backend\bin\Debug\net8.0\Npgsql.dll
+C:\Users\FMY-381\Desktop\projects\EventManagement\backend\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll

@@ -62,6 +62,10 @@
               "target": "Package",
               "version": "[1.8.15, )"
             },
+            "Hangfire.PostgreSql": {
+              "target": "Package",
+              "version": "[1.20.10, )"
+            },
             "Hangfire.SqlServer": {
               "target": "Package",
               "version": "[1.8.15, )"
@@ -113,6 +117,10 @@
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.3, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[8.0.10, )"
             },
             "QRCoder": {
               "target": "Package",

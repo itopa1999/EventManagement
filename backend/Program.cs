@@ -149,6 +149,15 @@ builder.Services.Configure<FormOptions>(options =>
     options.MultipartBodyLengthLimit = 700 * 1024; // Set limit to 700 KB
 });
 
+// // Database configuration
+// builder.Services.AddDbContext<DBContext>(options => {
+//     options.UseNpgsql(builder.Configuration.GetConnectionString("DatabaseConnection"));
+// });
+
+// // Hangfire configuration
+// builder.Services.AddHangfire(config => 
+//     config.UsePostgreSqlStorage(builder.Configuration.GetConnectionString("DatabaseConnection")));
+// builder.Services.AddHangfireServer();
 
 
 
