@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "7oreDhibKYo=",
+  "dgSpecHash": "k9zs3yLygEY=",
   "success": true,
   "projectFilePath": "C:\\Users\\FMY-381\\Desktop\\projects\\EventManagement\\backend\\backend.csproj",
   "expectedPackageFiles": [
@@ -127,5 +127,12 @@
     "C:\\Users\\FMY-381\\.nuget\\packages\\yamldotnet\\15.1.2\\yamldotnet.15.1.2.nupkg.sha512",
     "C:\\Users\\FMY-381\\.nuget\\packages\\zxing.net\\0.16.9\\zxing.net.0.16.9.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1900",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json."
+    }
+  ]
 }
