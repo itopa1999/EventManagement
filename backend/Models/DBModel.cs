@@ -86,6 +86,7 @@ namespace backend.Models
         public string? Speaker { get; set; }
         public int EventId { get; set; } // Foreign key to Event
         public Event? Event { get; set; } // Navigation property
+        public DateTime CreatedAt { get; set; } = TimeHelper.GetNigeriaTime();
     }
 
 

@@ -112,6 +112,10 @@ namespace backend.Dtos
     public class AdminEventDetailsDto
     {
         public int Id { get; set; }
+        public string? OrganizerFName { get; set; }
+        public string? OrganizerId { get; set; }
+        public string? OrganizerLName { get; set; }
+        public string? OrganizerUName { get; set; }
         public string? Name { get; set; }
         public string? EventType { get; set; }
         public string? State { get; set; }
@@ -124,6 +128,7 @@ namespace backend.Dtos
         public decimal Price { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? ImagePath { get; set; }
+        public bool IsBlock { get; set; }
         public List<AdminEventSessionListDto>? Sessions {get; set;} = new List<AdminEventSessionListDto>();
         public List<AdminEventReminderListDto>? Reminders {get; set;} = new List<AdminEventReminderListDto>();
     }
@@ -180,6 +185,27 @@ namespace backend.Dtos
         public string? Comments { get; set; }
         public int Rating { get; set; }
         public DateTime SubmittedAt { get; set; }
+    }
+
+    public class AdminDashboardDataDto
+    {
+        public int TotalEvent { get; set; }
+        public int TotalSession { get; set; }
+        public int TotalActiveEvent { get; set; }
+        public int TotalActiveSession { get; set; }
+        public int TotalOrganizer { get; set; }
+        public int TotalAttendee { get; set; }
+        public decimal TotalTicketSold { get; set; }
+        public List<MonthlyDataDto>? MonthlyUserRegistrations { get; set; }
+        public List<MonthlyDataDto>? MonthlyEventRegistrations { get; set; }
+        public List<MonthlyDataDto>? MonthlySessionRegistrations { get; set; }
+        
+    }
+
+    public class MonthlyDataDto
+    {
+        public string? Month { get; set; }
+        public int Count { get; set; }
     }
 
 

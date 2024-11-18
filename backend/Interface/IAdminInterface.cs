@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using backend.Dtos;
+using backend.Helpers;
 using backend.Models;
 
 namespace backend.Interface
@@ -21,6 +22,7 @@ namespace backend.Interface
         Task<(string message, User? user)> CreateOrganizerAsync(CreateOrganizerDto organizerDto);
         Task<List<AdminListOrganizerDto>?> AdminListOrganizerAsync();
         Task<AdminOrganizerDetailsDto?> AdminOrganizerDetailsAsync(string Id, HttpRequest request);
+        Task<List<AdminOrganizerEventListDto>?> AdminListEventAsync(AdminListEventQuery query,HttpRequest request);
         Task<(AdminEventDetailsDto? eventDetailsDto, bool IsSuccess)> AdminGetEventDetailsAsync(int id, HttpRequest request);
         Task<(List<AdminEventAttendeeListDto>? attendeeListDto, bool IsSuccess)> AdminGetEventAttendeeDetailsAsync (
             int eventId);
@@ -33,5 +35,6 @@ namespace backend.Interface
         
         Task<(List<AdminEventInvitationListDto>? invitationListDto, bool IsSuccess)> AdminGetEventIvDetailsAsync (
             int eventId);
+        
     }
 }

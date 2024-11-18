@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -376,6 +377,62 @@ namespace backend.AdminRepository
 
         }
 
+        public async Task<List<AdminOrganizerEventListDto>?> AdminListEventAsync(AdminListEventQuery query, HttpRequest request)
+        {
+            var events = _context.Events
+            .OrderByDescending(x=>x.CreatedAt)
+            .AsQueryable();
+            
+            if(!string.IsNullOrWhiteSpace(query.Name))
+            {
+                events = events.Where(x=>x.Name.Contains(query.Name)
+                || x.Id.ToString().Contains(query.Name));
+            };
+            if(!string.IsNullOrWhiteSpace(query.EventType))
+            {
+               events = events.Where(x=>x.EventType.ToString().Contains(query.EventType));
+                
+            };
+            if (query.IsInvitationOnly)
+            {
+                events = events.Where(x => x.IsInvitationOnly);
+            }
+
+            if (query.HasPayment)
+            {
+                events = events.Where(x => x.HasPayment);
+            }
+            
+            if(!string.IsNullOrWhiteSpace(query.Location))
+            {
+                events = events.Where(x=>x.Location.Contains(query.Location));
+            };
+
+            
+            if (query.StartDate > DateTime.MinValue)
+            {
+                Console.WriteLine($"StartDate Filter: {query.StartDate}");
+                events = events.Where(x => x.StartDate >= query.StartDate);
+            }
+
+            if (query.EndDate > DateTime.MinValue)
+            {
+                Console.WriteLine($"EndDate Filter: {query.EndDate}");
+                events = events.Where(x => x.EndDate <= query.EndDate); // Use <= for end date comparison.
+            }
+
+
+            var eventDtos = events
+                .Select(x => x.ToAdminOrganizerEventListDto(request));
+            Console.WriteLine(events.Count());
+            
+
+            return await eventDtos.ToListAsync();
+
+            
+            
+        }
+
         public async Task<(AdminEventDetailsDto? eventDetailsDto, bool IsSuccess)> AdminGetEventDetailsAsync(int id, HttpRequest request)
         {
             if (!await id.IsValidEventAdmin(_context))
@@ -383,6 +440,7 @@ namespace backend.AdminRepository
             var existingEvent = await _context.Events
             .Include(x=>x.Sessions)
             .Include(x=>x.Reminders)
+            .Include(x=>x.Organizer)
             .FirstOrDefaultAsync(x=>x.Id == id);
 
             var eventDetailsDto = existingEvent?.ToAdminEventDetailsDto(request);
@@ -462,6 +520,6 @@ namespace backend.AdminRepository
             
         }
 
-        
+    
     }
 }

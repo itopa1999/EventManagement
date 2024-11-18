@@ -26,12 +26,14 @@ namespace backend.Controllers
         public readonly IAdminInterface _adminRepo;
         private readonly EmailService _emailSender;
         private readonly ILogger<AdminController> _logger;
+        private readonly SpecialHelpers _specialHelpers;
         public AdminController(
             DBContext context,
             UserManager<User> userManager,
             IAdminInterface adminRepo,
             EmailService emailSender,
-            ILogger<AdminController> logger
+            ILogger<AdminController> logger,
+            SpecialHelpers specialHelpers
         )
         {
             _context = context;
@@ -39,6 +41,7 @@ namespace backend.Controllers
             _adminRepo = adminRepo;
             _emailSender = emailSender;
             _logger = logger;
+            _specialHelpers = specialHelpers;
         }
 
         
@@ -233,6 +236,29 @@ namespace backend.Controllers
         }
 
 
+        [HttpGet("list/events")]
+        // [Authorize]
+        // [Authorize(Policy = "IsAdmin")]
+        [ProducesResponseType(typeof(List<AdminOrganizerEventListDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> AdminListEvent([FromQuery] AdminListEventQuery query){
+            var events = await _adminRepo.AdminListEventAsync(query, Request);
+
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            var paginatedEvents = events.Skip(skipNumber).Take(query.PageSize).ToList();
+            return StatusCode((int)HttpStatusCode.OK, new {
+                events = paginatedEvents,
+                events_count = events.Count(),
+                pagesize = query.PageSize
+
+            } );
+
+        }
+
+
+
+
+
         [HttpGet("event/{eventId:int}/details")]
         [Authorize]
         [Authorize(Policy = "IsAdmin")]
@@ -346,6 +372,47 @@ namespace backend.Controllers
             .SumAsync(x=>x.Balance);
             return StatusCode((int)HttpStatusCode.OK, new {balance = balance}); 
         }
+
+
+        [HttpGet("dashboard")]
+        [Authorize]
+        [Authorize(Policy = "IsAdmin")]
+        [ProducesResponseType(typeof(List<AdminDashboardDataDto>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> AdminDashboard([FromQuery] MonthlyDashboardQuery query){
+            
+            var currentTime = TimeHelper.GetNigeriaTime();
+            int tEvent = await _context.Events.CountAsync();
+            int tSession = await _context.Sessions.CountAsync();
+            int tActiveEvent =  _context.Events
+                                .Where(e => e.StartDate.Date >= currentTime.Date)
+                                .Count();
+            int tActiveSession =  _context.Sessions
+                                .Where(e => e.StartTime.Date >= currentTime.Date)
+                                .Count();
+            int tUser = await _userManager.Users.Where(x=>x.UserType == UserType.Organizer).CountAsync();
+            int tAttendee = await _context.Attendees.CountAsync();
+            decimal tTicketSold = 30000;
+            var userRegistrations = await _specialHelpers.GetMonthlyUserRegistrationsAsync(query.UserYear);
+            var EventRegistrations = await _specialHelpers.GetMonthlyEventRegistrationsAsync(query.EventYear);
+            var SessionRegistrations = await _specialHelpers.GetMonthlySessionRegistrationsAsync(query.SessionYear);
+            var dashboardData = new AdminDashboardDataDto
+            {
+                TotalEvent = tEvent,
+                TotalSession = tSession,
+                TotalActiveEvent = tActiveEvent,
+                TotalActiveSession = tActiveSession,
+                TotalOrganizer = tUser,
+                TotalAttendee = tAttendee,
+                TotalTicketSold = tTicketSold,
+                MonthlyUserRegistrations = userRegistrations,
+                MonthlyEventRegistrations = EventRegistrations,
+                MonthlySessionRegistrations = SessionRegistrations
+            };
+
+            return StatusCode((int)HttpStatusCode.OK, dashboardData); 
+            
+        }
+
 
 
         

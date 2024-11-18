@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         successAlert.classList.remove('d-none');
                         setTimeout(function() {
                             window.location.href = 'dashboard.html';
-                        }, 5000);
+                        }, 4000);
                     } else {
                         localStorage.removeItem('event_token');
                         window.location.href = 'login.html';

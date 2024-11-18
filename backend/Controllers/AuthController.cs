@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Net;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Azure.Messaging;
 using backend.Data;
 using backend.Dtos;
 using backend.Helpers;
@@ -15,7 +8,6 @@ using backend.Services;
 using backend.Services.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers
 {

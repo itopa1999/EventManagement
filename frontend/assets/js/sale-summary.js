@@ -141,7 +141,7 @@ fetch('http://localhost:5297/admin/api/get/users/list', {
         }).then(data => {
             document.getElementById('totalProductSoldPrice').innerHTML= formatCurrency(data.totalPrice);
             document.getElementById('totalSales').innerHTML= data.totalQuery;
-            const tableBody = document.querySelector('.table-container'); // Target table body
+            const tableBody = document.querySelector('.table-container');
             tableBody.innerHTML = '';
             if (data.sales.length === 0) {
                 tableBody.innerHTML = `

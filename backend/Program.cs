@@ -171,6 +171,9 @@ builder.Services.AddHangfire(config =>
     config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DatabaseConnection")));
 builder.Services.AddHangfireServer();
 
+builder.Services.AddScoped<SpecialHelpers>();
+
+
 builder.Services.AddScoped<IJWTService, JWTServices>();
 builder.Services.AddScoped<IAuthInterface, IAuthRepository>();
 builder.Services.AddScoped<IOrganizerInterfaces, OrganizerRepository>();

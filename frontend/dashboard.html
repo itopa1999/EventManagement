@@ -10,21 +10,16 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="assets/img/favicon.png" rel="icon">
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="assets/img/favicon.jpeg" rel="icon">
+
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
-  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
-  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
 
   <link href="assets/css/style.css" rel="stylesheet">
 <style>
@@ -60,9 +55,9 @@
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-      <a href="index.html" class="logo d-flex align-items-center">
+      <a href="dashboard.html" class="logo d-flex align-items-center">
         <img src="assets/img/logo.jpeg" alt="">
-        <span class="d-none d-lg-block">StarPOS</span>
+        <span class="d-none d-lg-block">EventMaster</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
@@ -81,7 +76,7 @@
         <li class="nav-item dropdown pe-3">
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-            <img src="assets/profile_pic.jpg" alt="Profile" class="rounded-circle">
+            <img src="assets//img/profile_pic.jpg" alt="Profile" class="rounded-circle">
             <span class="d-none d-md-block dropdown-toggle ps-2 text-white"  id="agent-name"></span>
           </a><!-- End Profile Iamge Icon -->
 
@@ -124,9 +119,9 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
       <li class="nav-item">
-        <a class="nav-link " href="index.html">
-          <i class="bi bi-grid"></i>
-          <span>Index</span>
+        <a class="nav-link " href="dashboard.html">
+          <i class="bi bi-house-door"></i>
+          <span>Dashboard</span>
         </a>
       </li>
      
@@ -134,23 +129,23 @@
       <li class="nav-heading">Pages</li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="dashboard.html" >
-            <i class="bi bi-house"></i>
-          <span>Dashboard</span>
+        <a class="nav-link collapsed" href="list-events.html" >
+            <i class="bi bi-calendar-event"></i>
+          <span>Events</span>
         </a>
       </li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="product.html" >
-            <i class="bi bi-tags"></i>
-          <span>Products</span>
+        <a class="nav-link collapsed" href="permissions.html" >
+            <i class="bi bi-shield-lock"></i>
+          <span>Permissions</span>
         </a>
       </li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="sales-summary.html" >
-            <i class="bi bi-graph-up"></i>
-          <span>Sales Summary</span>
+        <a class="nav-link collapsed" href="transactions.html" >
+            <i class="bi bi-cash"></i>
+          <span>Transactions</span>
         </a>
       </li>
 
@@ -178,7 +173,7 @@
       <h1>Dashboard</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item"><a href="dashboard.html">Home</a></li>
           <li class="breadcrumb-item active">Dashboard</li>
         </ol>
       </nav>
@@ -187,138 +182,191 @@
     <section class="section dashboard">
       <div class="row">
         <div class="col-lg-4">
-        <div class="card card-custom">
-          <!-- Bootstrap Icon -->
-          <div class="icon-bg mx-auto">
-            <i class="bi bi-arrow-up-right-square"></i>
+          <div class="card card-custom">
+              <div class="icon-bg mx-auto">
+                  <i class="bi bi-arrow-up-right-square"></i>
+              </div>
+              <h5 class="card-title">Total Events</h5>
+              <div class="value" id="totalEvent">
+                  <div class="spinner-grow bg-secondary" id="loadingSpinnerTotalEvents" role="status" style="display: none;">
+                      <span class="visually-hidden">Loading...</span>
+                  </div>
+              </div>
           </div>
-          <h5 class="card-title">Total Products</h5>
-          <div class="value" id="totalProduct"></div>
-        </div>
       </div>
+      
       <div class="col-lg-4">
-        <div class="card card-custom">
-          <!-- Bootstrap Icon -->
-          <div class="icon-bg mx-auto">
-            <i class="bi bi-arrow-up-right-square"></i>
+          <div class="card card-custom">
+              <div class="icon-bg mx-auto">
+                  <i class="bi bi-arrow-up-right-square"></i>
+              </div>
+              <h5 class="card-title">Total Sessions</h5>
+              <div class="value" id="totalSession">
+                  <div class="spinner-grow bg-secondary" id="loadingSpinnerTotalSessions" role="status" style="display: none;">
+                      <span class="visually-hidden">Loading...</span>
+                  </div>
+              </div>
           </div>
-          <h5 class="card-title">Total Product Items</h5>
-          <div class="value" id="totalProductItem"></div>
-        </div>
       </div>
+      
       <div class="col-lg-4">
-        <div class="card card-custom">
-          <!-- Bootstrap Icon -->
-          <div class="icon-bg mx-auto">
-            <i class="bi bi-arrow-up-right-square"></i>
+          <div class="card card-custom">
+              <div class="icon-bg mx-auto">
+                  <i class="bi bi-arrow-up-right-square"></i>
+              </div>
+              <h5 class="card-title">Total Active Events</h5>
+              <div class="value" id="totalActiveEvent">
+                  <div class="spinner-grow bg-secondary" id="loadingSpinnerActiveEvents" role="status" style="display: none;">
+                      <span class="visually-hidden">Loading...</span>
+                  </div>
+              </div>
           </div>
-          <h5 class="card-title">Total Products In Stock</h5>
-          <div class="value" id="totalProductInStock"></div>
-        </div>
       </div>
+      
       <div class="col-lg-4">
-        <div class="card card-custom">
-          <!-- Bootstrap Icon -->
-          <div class="icon-bg mx-auto">
-            <i class="bi bi-arrow-up-right-square"></i>
+          <div class="card card-custom">
+              <div class="icon-bg mx-auto">
+                  <i class="bi bi-arrow-up-right-square"></i>
+              </div>
+              <h5 class="card-title">Total Active Sessions</h5>
+              <div class="value" id="totalActiveSession">
+                  <div class="spinner-grow bg-secondary" id="loadingSpinnerActiveSessions" role="status" style="display: none;">
+                      <span class="visually-hidden">Loading...</span>
+                  </div>
+              </div>
           </div>
-          <h5 class="card-title">Total Products out of Stock</h5>
-          <div class="value" id="totalProductOutOfStock"></div>
-        </div>
       </div>
+      
       <div class="col-lg-4">
-        <div class="card card-custom">
-          <!-- Bootstrap Icon -->
-          <div class="icon-bg mx-auto">
-            <i class="bi bi-arrow-up-right-square"></i>
+          <div class="card card-custom">
+              <div class="icon-bg mx-auto">
+                  <i class="bi bi-arrow-up-right-square"></i>
+              </div>
+              <h5 class="card-title">Total Organizers</h5>
+              <div class="value" id="totalOrganizer">
+                  <div class="spinner-grow bg-secondary" id="loadingSpinnerOrganizers" role="status" style="display: none;">
+                      <span class="visually-hidden">Loading...</span>
+                  </div>
+              </div>
           </div>
-          <h5 class="card-title">Total Users</h5>
-          <div class="value" id="totalUser"></div>
-        </div>
       </div>
+      
       <div class="col-lg-4">
-        <div class="card card-custom">
-          <!-- Bootstrap Icon -->
-          <div class="icon-bg mx-auto">
-            <i class="bi bi-arrow-up-right-square"></i>
+          <div class="card card-custom">
+              <div class="icon-bg mx-auto">
+                  <i class="bi bi-arrow-up-right-square"></i>
+              </div>
+              <h5 class="card-title">Total Attendee</h5>
+              <div class="value" id="totalAttendee">
+                  <div class="spinner-grow bg-secondary" id="loadingSpinnerAttendee" role="status" style="display: none;">
+                      <span class="visually-hidden">Loading...</span>
+                  </div>
+              </div>
           </div>
-          <h5 class="card-title">Total Product Price</h5>
-          <div class="value" id="totalProductPrice"></div>
-        </div>
       </div>
+      
       <div class="col-lg-4">
-        <div class="card card-custom">
-          <!-- Bootstrap Icon -->
-          <div class="icon-bg mx-auto">
-            <i class="bi bi-arrow-up-right-square"></i>
+          <div class="card card-custom">
+              <div class="icon-bg mx-auto">
+                  <i class="bi bi-arrow-up-right-square"></i>
+              </div>
+              <h5 class="card-title">Total Ticket Sold(₦)</h5>
+              <div class="value" id="totalTicketSold">
+                  <div class="spinner-grow bg-secondary" id="loadingSpinnerTicketSold" role="status" style="display: none;">
+                      <span class="visually-hidden">Loading...</span>
+                  </div>
+              </div>
           </div>
-          <h5 class="card-title">Total Products Sold Price</h5>
-          <div class="value" id="totalProductSoldPrice"></div>
-        </div>
       </div>
-      <div class="col-lg-4">
-        <div class="card card-custom">
-          <!-- Bootstrap Icon -->
-          <div class="icon-bg mx-auto">
-            <i class="bi bi-arrow-up-right-square"></i>
-          </div>
-          <h5 class="card-title">Total Sales</h5>
-          <div class="value" id="totalSales"></div>
-        </div>
-      </div>
+      
 
-
-
-      <div class="row mt-5">
-        <div class="col-lg-6">
-          <div class="card info-card sales-card">
+      <div class="col-lg-12">
+        <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Recent Product <span>| Items</span></h5>
-                <div class="table-responsive">
-                  <table class="table table-striped" style="font-size: 12px;">
-                    <thead>
-                        <tr>
-                            <th scope="col">Id</th>
-                            <th scope="col">Product</th>
-                            <th scope="col">In Stock</th>
-                            <th scope="col">Price (₦)</th>
-                            <th scope="col">CreatedAt</th>
-                        </tr>
-                    </thead>
-                    <tbody class="product-table">
-                       
-                    </tbody>
-
-                </table>
+              <h5 class="card-title">Monthly Events Registrations</h5>
+    
+                <!-- Three-dot icon for filter -->
+                <div class="dropdown d-flex justify-content-end">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-three-dots"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                        <li>
+                            <label for="eventYearSelect" class="dropdown-item-text">Select Year</label>
+                            <select id="eventYearSelect" class="form-select">
+                              <option value="">All Years</option>
+                              <option value="2024">2024</option>
+                              <option value="2023">2023</option>
+                              <option value="2022">2022</option>
+                            </select>
+                        </li>
+                    </ul>
                 </div>
-            </div>
-          </div>
+                <canvas id="eventChart" style="max-height: 400px;"></canvas>
         </div>
-        <div class="col-lg-6">
-          <div class="card ">
-            <div class="card-body">
-              <h5 class="card-title">Recent Sold Product <span>| Items</span></h5>
-                <div class="table-responsive">
-                  <table class="table table-striped" style="font-size: 12px;">
-                    <thead>
-                        <tr>
-                            <th scope="col">Id</th>
-                            <th scope="col">Sale Agent</th>
-                            <th scope="col">Customer Name</th>
-                            <th scope="col">Total Price</th>
-                            <th scope="col">CreatedAt</th>
-                        </tr>
-                    </thead>
-                    <tbody class="cart-table">
-                       
-                    </tbody>
-                </table>
-                </div>
-            </div>
-          </div>
-        </div>
-
       </div>
+    </div>
+
+    <div class="col-lg-12">
+      <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Monthly Sessions Registrations</h5>
+  
+              <!-- Three-dot icon for filter -->
+              <div class="dropdown d-flex justify-content-end">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="bi bi-three-dots"></i>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                      <li>
+                          <label for="sessionYearSelect" class="dropdown-item-text">Select Year</label>
+                          <select id="sessionYearSelect" class="form-select">
+                            <option value="">All Years</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                          </select>
+                      </li>
+                  </ul>
+              </div>
+              <canvas id="sessionChart" style="max-height: 400px;"></canvas>
+        
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-lg-12">
+    <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Monthly Organizers Registrations</h5>
+
+            <!-- Three-dot icon for filter -->
+            <div class="dropdown d-flex justify-content-end">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-three-dots"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                    <li>
+                        <label for="userYearSelect" class="dropdown-item-text">Select Year</label>
+                        <select id="userYearSelect" class="form-select">
+                          <option value="">All Years</option>
+                          <option value="2024">2024</option>
+                          <option value="2023">2023</option>
+                          <option value="2022">2022</option>
+                        </select>
+                    </li>
+                </ul>
+            </div>
+            <canvas id="userChart" style="max-height: 400px;"></canvas>
+      
+    </div>
+  </div>
+</div>
+
+
+
+  
 
 
       </div>
@@ -345,13 +393,8 @@
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
   <!-- Vendor JS Files -->
-  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/chart.js/chart.umd.js"></script>
-  <script src="assets/vendor/echarts/echarts.min.js"></script>
-  <script src="assets/vendor/quill/quill.min.js"></script>
-  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
-  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.0.1/dist/chart.umd.min.js"></script>
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>

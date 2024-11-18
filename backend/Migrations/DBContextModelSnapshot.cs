@@ -51,19 +51,19 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "22d4e2e3-d3d2-4265-8c02-adacde364cc5",
+                            Id = "073b55c2-28fc-4fb6-b102-5d2649317c9e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "3989dd21-835c-4e1e-a4c9-6aad76a9a684",
+                            Id = "05ab4e39-df2b-4dff-88d7-1e582be72574",
                             Name = "Organizer",
                             NormalizedName = "ORGANIZER"
                         },
                         new
                         {
-                            Id = "a67f82ef-edec-4a8a-a0f6-e36d3be968e1",
+                            Id = "ce657e66-fa2a-458a-aa04-1ec44a81dc2c",
                             Name = "Attendee",
                             NormalizedName = "ATTENDEE"
                         });
@@ -528,6 +528,9 @@ namespace backend.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");

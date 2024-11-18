@@ -1,1 +1,107 @@
+# OS-generated files #
+######################
+.DS_Store
+Thumbs.db
+
+# User-specific files #
+#######################
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Auto-generated files #
+########################
+*.obj
+*.exe
+*.pdb
+*.dll
+*.cache
+*.log
+*.vspscc
+*.vssscc
+.build.log
+
+# Build folders #
+#################
+bin/
+obj/
+out/
+
+# Test output #
+###############
+TestResults/
+*.trx
+*.coverage
+
+# Visual Studio Code #
+######################
+.vscode/
+
+# Visual Studio #
+#################
+.vs/
+.vscode/
+.ionide/
+
+# DotNet Core #
+###############
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Temporary and cache files #
+#############################
+**/*.swp
+**/*.bak
+**/*.tmp
+*.tmp
+*.temp
+*.log
+*.ncb
+*.sdf
+*.cache
+*.sqlite
+*.sql
+
+# Others #
+##########
+*.config
+*.config.old
+.idea/
+_ReSharper*/
+*.resharper
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sql
+*.mdf
+*.sqlite
+*.sqlite3
+
+# ASP.NET Scaffolding #
+#######################
+ScaffoldingReadMe.txt
+
+# Entity Framework #
+####################
+Migrations/
+*.jfm
+
+# Application files #
+#####################
+appsettings.*.json
+secrets.json
+
+# Package directories #
+#######################
+node_modules/
+jspm_packages/
+bower_components/
+
+# Optional: Rider #
+###################
+.idea/
 

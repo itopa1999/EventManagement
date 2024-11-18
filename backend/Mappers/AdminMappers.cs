@@ -81,6 +81,10 @@ namespace backend.Mappers
         public static AdminEventDetailsDto ToAdminEventDetailsDto(this Event listEvent, HttpRequest request){
             return new AdminEventDetailsDto{
                 Id = listEvent.Id,
+                OrganizerId = listEvent.OrganizerId,
+                OrganizerFName = listEvent.Organizer.FirstName,
+                OrganizerLName = listEvent.Organizer.LastName,
+                OrganizerUName = listEvent.Organizer.UserName,
                 Name = listEvent.Name,
                 EventType = listEvent.EventType.ToString(),
                 State = listEvent.State,
@@ -92,6 +96,7 @@ namespace backend.Mappers
                 HasPayment = listEvent.HasPayment,
                 Price = listEvent.Price,
                 CreatedAt = listEvent.CreatedAt,
+                IsBlock = listEvent.IsBlock,
                 ImagePath = $"{request.Scheme}://{request.Host}{listEvent.ImagePath}",
                 Sessions = listEvent.Sessions.Select(x=>x.ToAdminEventReminderListDto()).ToList(),
                 Reminders = listEvent.Reminders.Select(x=>x.ToAdminEventReminderListDto()).ToList()
