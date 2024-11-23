@@ -20,21 +20,24 @@ namespace backend.Interface
         Task<(string message, bool IsSuccess)> AllBlockUnblockEmailAccessDtoAsync (string status);
         Task<(string message, bool IsSuccess)> AllBlockUnblockWalletAccessDtoAsync (string status);
         Task<(string message, User? user)> CreateOrganizerAsync(CreateOrganizerDto organizerDto);
-        Task<List<AdminListOrganizerDto>?> AdminListOrganizerAsync();
+        Task<List<AdminListOrganizerDto>?> AdminListOrganizerAsync(AdminSearchQuery query);
+        Task<List<AdminListAttendeeDto>?> AdminListEventsAttendeesAsync(AdminSearchQuery query);
+        Task<List<AdminListOrganizersWalletDto>?> AdminListOrganizersWalletAsync(AdminSearchQuery query);
+        Task<List<AdminListTransactionDto>?> AdminListTransactionAsync(AdminTransactionQuery query);
         Task<AdminOrganizerDetailsDto?> AdminOrganizerDetailsAsync(string Id, HttpRequest request);
         Task<List<AdminOrganizerEventListDto>?> AdminListEventAsync(AdminListEventQuery query,HttpRequest request);
         Task<(AdminEventDetailsDto? eventDetailsDto, bool IsSuccess)> AdminGetEventDetailsAsync(int id, HttpRequest request);
         Task<(List<AdminEventAttendeeListDto>? attendeeListDto, bool IsSuccess)> AdminGetEventAttendeeDetailsAsync (
-            int eventId);
+            int eventId, AdminSearchQuery query);
         Task<(List<AdminEventTicketListDto>? ticketListDto, bool IsSuccess)> AdminGetEventTicketDetailsAsync (
-            int eventId);
+            int eventId, AdminSearchQuery query);
         Task<(List<AdminEventPaymentListDto>? paymentListDto, bool IsSuccess)> AdminGetEventPaymentDetailsAsync (
-            int eventId);
+            int eventId, AdminSearchQuery query);
         Task<(List<AdminEventFeedbackListDto>? feedbackListDto, bool IsSuccess)> AdminGetEventRatingDetailsAsync (
-            int eventId);
+            int eventId, AdminSearchQuery query);
         
         Task<(List<AdminEventInvitationListDto>? invitationListDto, bool IsSuccess)> AdminGetEventIvDetailsAsync (
-            int eventId);
+            int eventId, AdminSearchQuery query);
         
     }
 }

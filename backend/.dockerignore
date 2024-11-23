@@ -1,5 +1,8 @@
 bin/
 obj/
+.vs/
 *.user
 *.suo
-*.sln
+*.tmp
+*.log
+node_modules/

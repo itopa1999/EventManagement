@@ -21,3 +21,5 @@ EXPOSE 80
 
 # Run the application
 ENTRYPOINT ["dotnet", "backend.dll"]
+
+

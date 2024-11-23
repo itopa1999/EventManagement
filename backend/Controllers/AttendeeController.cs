@@ -88,7 +88,7 @@ namespace backend.Controllers
 
 
         [HttpGet("confirm/ticket/payment/{eventId:int}")]
-        [ProducesResponseType(typeof(MessageResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
         public  async Task<IActionResult> ConfirmTicketPaymentAsync([FromRoute] int eventId,[FromQuery] string transaction_id)
         {
@@ -116,7 +116,7 @@ namespace backend.Controllers
                 
                 await transaction.CommitAsync();
                 
-                return StatusCode((int)HttpStatusCode.OK, new MessageResponse(result));
+                return StatusCode((int)HttpStatusCode.NoContent);
             }catch(Exception ex){
                 await transaction.RollbackAsync();
                 _logger.LogCritical($"Confirm Buy Event Ticket: Event with Id: {eventId} An error occurred: {ex.Message}");

@@ -55,6 +55,7 @@ namespace backend.Dtos
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? UserType { get; set; }
+        public bool IsBlock { get; set; }
 
     }
 
@@ -89,6 +90,7 @@ namespace backend.Dtos
         public DateTime EndDate { get; set; }
         public string? Description { get; set; }
         public string? ImagePath { get; set; }
+        public bool IsBlock { get; set; }
     }
 
 
@@ -172,6 +174,7 @@ namespace backend.Dtos
         public DateTime PaymentDate { get; set; }
         public string? Method { get; set; }
         public string? Status { get; set; }
+        public string? PayerEmail { get; set; }
         public int TicketId { get; set; }
         public string? TransactionId { get; set; } 
 
@@ -206,6 +209,46 @@ namespace backend.Dtos
     {
         public string? Month { get; set; }
         public int Count { get; set; }
+    }
+
+
+    public class AdminListAttendeeDto
+    {
+        public int Id { get; set; }
+         public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? Email { get; set; }
+        public bool IsBlock { get; set; }
+    }
+
+
+    public class AdminListOrganizersWalletDto
+    {
+        public int Id { get; set; }
+        public string? UserId { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? Email { get; set; }
+        public string? Username { get; set; }
+        public decimal Balance { get; set; }
+        public bool IsBlock { get; set; }
+    }
+
+
+
+    public class AdminListTransactionDto
+    {
+        public int Id { get; set; }
+        public string? UserId { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? Email { get; set; }
+        public string? Username { get; set; }
+        public decimal Amount { get; set; }
+        public string? Description { get; set; }
+        public string? Ref { get; set; }
+        public string? Type { get; set; }
+        public DateTime Date { get; set; }
     }
 
 

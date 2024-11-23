@@ -58,7 +58,7 @@ namespace backend.Controllers
                 return BadRequest(new ErrorResponse { ErrorDescription = message });
             }
 
-            return StatusCode((int)HttpStatusCode.OK, message);
+            return StatusCode((int)HttpStatusCode.OK, new MessageResponse(message));
         }
 
 
@@ -75,7 +75,7 @@ namespace backend.Controllers
                 return BadRequest(new ErrorResponse { ErrorDescription = message });
             }
 
-            return StatusCode((int)HttpStatusCode.OK, message);
+            return StatusCode((int)HttpStatusCode.OK, new MessageResponse(message));
         }
 
 
@@ -92,7 +92,7 @@ namespace backend.Controllers
                 return BadRequest(new ErrorResponse { ErrorDescription = message });
             }
 
-            return StatusCode((int)HttpStatusCode.OK, message);
+            return StatusCode((int)HttpStatusCode.OK, new MessageResponse(message));
         }
 
 
@@ -110,7 +110,7 @@ namespace backend.Controllers
                 return BadRequest(new ErrorResponse { ErrorDescription = message });
             }
 
-            return StatusCode((int)HttpStatusCode.OK, message);
+            return StatusCode((int)HttpStatusCode.OK, new MessageResponse(message));
         }
 
 
@@ -127,7 +127,7 @@ namespace backend.Controllers
                 return BadRequest(new ErrorResponse { ErrorDescription = message });
             }
 
-            return StatusCode((int)HttpStatusCode.OK, message);
+            return StatusCode((int)HttpStatusCode.OK, new MessageResponse(message));
         }
 
 
@@ -144,7 +144,7 @@ namespace backend.Controllers
                 return BadRequest(new ErrorResponse { ErrorDescription = message });
             }
 
-            return StatusCode((int)HttpStatusCode.OK, message);
+            return StatusCode((int)HttpStatusCode.OK, new MessageResponse(message));
         }
 
 
@@ -161,7 +161,7 @@ namespace backend.Controllers
                 return BadRequest(new ErrorResponse { ErrorDescription = message });
             }
 
-            return StatusCode((int)HttpStatusCode.OK, message);
+            return StatusCode((int)HttpStatusCode.OK, new MessageResponse(message));
         }
 
 
@@ -178,7 +178,7 @@ namespace backend.Controllers
                 return BadRequest(new ErrorResponse { ErrorDescription = message });
             }
 
-            return StatusCode((int)HttpStatusCode.OK, message);
+            return StatusCode((int)HttpStatusCode.OK, new MessageResponse(message));
         }
 
 
@@ -216,9 +216,17 @@ namespace backend.Controllers
         [Authorize]
         [Authorize(Policy = "IsAdmin")]
         [ProducesResponseType(typeof(List<AdminListOrganizerDto>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> ListOrganizers(){
-            var organizers = await _adminRepo.AdminListOrganizerAsync();
-            return StatusCode((int)HttpStatusCode.OK, organizers);
+        public async Task<IActionResult> ListOrganizers([FromQuery] AdminSearchQuery query){
+            var organizers = await _adminRepo.AdminListOrganizerAsync(query);
+
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            var paginatedOrganizers = organizers.Skip(skipNumber).Take(query.PageSize).ToList();
+            return StatusCode((int)HttpStatusCode.OK, new {
+                organizers = paginatedOrganizers,
+                organizers_count = paginatedOrganizers.Count(),
+                pagesize = query.PageSize
+
+            } );
         }
 
 
@@ -237,8 +245,8 @@ namespace backend.Controllers
 
 
         [HttpGet("list/events")]
-        // [Authorize]
-        // [Authorize(Policy = "IsAdmin")]
+        [Authorize]
+        [Authorize(Policy = "IsAdmin")]
         [ProducesResponseType(typeof(List<AdminOrganizerEventListDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> AdminListEvent([FromQuery] AdminListEventQuery query){
@@ -248,7 +256,7 @@ namespace backend.Controllers
             var paginatedEvents = events.Skip(skipNumber).Take(query.PageSize).ToList();
             return StatusCode((int)HttpStatusCode.OK, new {
                 events = paginatedEvents,
-                events_count = events.Count(),
+                events_count = paginatedEvents.Count(),
                 pagesize = query.PageSize
 
             } );
@@ -272,7 +280,63 @@ namespace backend.Controllers
                 return BadRequest(new ErrorResponse { ErrorDescription = $"Event not found" });
             }
 
-            return StatusCode((int)HttpStatusCode.OK, eventDetailsDto);
+            int payments_count = await _context.Payments.Where(x=>x.EventId==eventId).CountAsync();
+            int reminders_count = await _context.Reminders.Where(x=>x.EventId==eventId).CountAsync();
+            int sessions_count = await _context.Sessions.Where(x=>x.EventId==eventId).CountAsync();
+            int attendees_count = await _context.Attendees.Where(x=>x.EventId==eventId).CountAsync();
+            int invitations_count = await _context.Invitations.Where(x=>x.EventId==eventId).CountAsync();
+            int tickets_count = await _context.Tickets.Where(x=>x.Attendee.EventId==eventId).CountAsync();
+            int feedbacks_count = await _context.Feedbacks.Where(x=>x.EventId==eventId).CountAsync();
+
+            return StatusCode((int)HttpStatusCode.OK, new {
+                event_details = eventDetailsDto,
+                payments_count = payments_count,
+                reminders_count= reminders_count,
+                sessions_count = sessions_count,
+                attendees_count = attendees_count,
+                invitations_count = invitations_count,
+                tickets_count = tickets_count,
+                feedbacks_count = feedbacks_count
+                });
+                
+        }
+
+
+        [HttpGet("list/attendees")]
+        [Authorize]
+        [Authorize(Policy = "IsAdmin")]
+        [ProducesResponseType(typeof(List<AdminListAttendeeDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.NoContent)]
+        public async Task<IActionResult> AttendeesList([FromQuery] AdminSearchQuery query){
+            var attendees = await _adminRepo.AdminListEventsAttendeesAsync(query);
+
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            var paginatedAttendees = attendees.Skip(skipNumber).Take(query.PageSize).ToList();
+            return StatusCode((int)HttpStatusCode.OK, new {
+                attendees = paginatedAttendees,
+                attendees_count = paginatedAttendees.Count(),
+                pagesize = query.PageSize
+
+            } );
+        }
+
+
+        [HttpGet("list/organizers/wallet")]
+        [Authorize]
+        [Authorize(Policy = "IsAdmin")]
+        [ProducesResponseType(typeof(List<AdminListAttendeeDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.NoContent)]
+        public async Task<IActionResult> ListOrganizersWallet([FromQuery] AdminSearchQuery query){
+            var wallets = await _adminRepo.AdminListOrganizersWalletAsync(query);
+
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            var paginatedWallets = wallets.Skip(skipNumber).Take(query.PageSize).ToList();
+            return StatusCode((int)HttpStatusCode.OK, new {
+                wallets = paginatedWallets,
+                wallets_count = paginatedWallets.Count(),
+                pagesize = query.PageSize
+
+            } );
         }
 
 
@@ -282,15 +346,22 @@ namespace backend.Controllers
         [Authorize(Policy = "IsAdmin")]
         [ProducesResponseType(typeof(List<AdminEventInvitationListDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetEventIvDetailsAsync([FromRoute] int eventId){
-            var (eventIvDetailsDto, IsSuccess) = await _adminRepo.AdminGetEventIvDetailsAsync(eventId);
+        public async Task<IActionResult> GetEventIvDetailsAsync([FromRoute] int eventId,[FromQuery] AdminSearchQuery query){
+            var (eventIvDetailsDto, IsSuccess) = await _adminRepo.AdminGetEventIvDetailsAsync(eventId, query);
             if (!IsSuccess)
             {
                 _logger.LogError($"Get Event Invitation:  Event with Id: {eventId} ");
                 return BadRequest(new ErrorResponse { ErrorDescription = $"Event not found" });
             }
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            var invitations = eventIvDetailsDto.Skip(skipNumber).Take(query.PageSize).ToList();
 
-            return StatusCode((int)HttpStatusCode.OK, eventIvDetailsDto);
+            return StatusCode((int)HttpStatusCode.OK, new {
+                invitations = invitations,
+                invitations_count = invitations.Count(),
+                pagesize = query.PageSize
+
+            } );
         }
 
 
@@ -299,15 +370,23 @@ namespace backend.Controllers
         [Authorize(Policy = "IsAdmin")]
         [ProducesResponseType(typeof(List<AdminEventAttendeeListDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetEventAttendeeDetailsAsync([FromRoute] int eventId){
-            var (eventAttendeeDetailsDto, IsSuccess) = await _adminRepo.AdminGetEventAttendeeDetailsAsync(eventId);
+        public async Task<IActionResult> GetEventAttendeeDetailsAsync([FromRoute] int eventId,[FromQuery] AdminSearchQuery query){
+            var (eventAttendeeDetailsDto, IsSuccess) = await _adminRepo.AdminGetEventAttendeeDetailsAsync(eventId,query);
             if (!IsSuccess)
             {
                 _logger.LogError($"Get Event attendees:  Event with Id: {eventId}");
                 return BadRequest(new ErrorResponse { ErrorDescription = $"Event not found" });
             }
 
-            return StatusCode((int)HttpStatusCode.OK, eventAttendeeDetailsDto);
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            var attendees = eventAttendeeDetailsDto.Skip(skipNumber).Take(query.PageSize).ToList();
+
+            return StatusCode((int)HttpStatusCode.OK, new {
+                attendees = attendees,
+                attendees_count = eventAttendeeDetailsDto.Count(),
+                pagesize = query.PageSize
+
+            } );
         }
 
 
@@ -316,15 +395,23 @@ namespace backend.Controllers
         [Authorize(Policy = "IsAdmin")]
         [ProducesResponseType(typeof(List<AdminEventTicketListDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetEventTicketsDetailsAsync([FromRoute] int eventId){
-            var (eventTicketDetailsDto, IsSuccess) = await _adminRepo.AdminGetEventTicketDetailsAsync(eventId);
+        public async Task<IActionResult> GetEventTicketsDetailsAsync([FromRoute] int eventId,[FromQuery] AdminSearchQuery query){
+            var (eventTicketDetailsDto, IsSuccess) = await _adminRepo.AdminGetEventTicketDetailsAsync(eventId, query);
             if (!IsSuccess)
             {
                  _logger.LogError($"Get Event tickets:  Event with Id: {eventId} ");
                 return BadRequest(new ErrorResponse { ErrorDescription = $"Event not found" });
             }
 
-            return StatusCode((int)HttpStatusCode.OK, eventTicketDetailsDto);
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            var tickets = eventTicketDetailsDto.Skip(skipNumber).Take(query.PageSize).ToList();
+
+            return StatusCode((int)HttpStatusCode.OK, new {
+                tickets = tickets,
+                tickets_count = tickets.Count(),
+                pagesize = query.PageSize
+
+            } );
         }
 
 
@@ -333,15 +420,23 @@ namespace backend.Controllers
         [Authorize(Policy = "IsAdmin")]
         [ProducesResponseType(typeof(List<AdminEventPaymentListDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetEventPaymentsDetailsAsync([FromRoute] int eventId){
-            var (eventPaymentsDetailsDto, IsSuccess) = await _adminRepo.AdminGetEventPaymentDetailsAsync(eventId);
+        public async Task<IActionResult> GetEventPaymentsDetailsAsync([FromRoute] int eventId,[FromQuery] AdminSearchQuery query){
+            var (eventPaymentsDetailsDto, IsSuccess) = await _adminRepo.AdminGetEventPaymentDetailsAsync(eventId, query);
             if (!IsSuccess)
             {
                  _logger.LogError($"Get Event payments:  Event with Id: {eventId} ");
                 return BadRequest(new ErrorResponse { ErrorDescription = $"Event not found" });
             }
 
-            return StatusCode((int)HttpStatusCode.OK, eventPaymentsDetailsDto);
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            var payments = eventPaymentsDetailsDto.Skip(skipNumber).Take(query.PageSize).ToList();
+
+            return StatusCode((int)HttpStatusCode.OK, new {
+                payments = payments,
+                payments_count = payments.Count(),
+                pagesize = query.PageSize
+
+            } );
         }
 
 
@@ -350,15 +445,23 @@ namespace backend.Controllers
         [Authorize(Policy = "IsAdmin")]
         [ProducesResponseType(typeof(List<AdminEventFeedbackListDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetEventFeedbackDetailsAsync([FromRoute] int eventId){
-            var (eventFeedbacksDetailsDto, IsSuccess) = await _adminRepo.AdminGetEventRatingDetailsAsync(eventId);
+        public async Task<IActionResult> GetEventFeedbackDetailsAsync([FromRoute] int eventId,[FromQuery] AdminSearchQuery query){
+            var (eventFeedbacksDetailsDto, IsSuccess) = await _adminRepo.AdminGetEventRatingDetailsAsync(eventId, query);
             if (!IsSuccess)
             {
                  _logger.LogError($"Get Event feedbacks:  Event with Id: {eventId} ");
                 return BadRequest(new ErrorResponse { ErrorDescription = $"Event not found" });
             }
 
-            return StatusCode((int)HttpStatusCode.OK, eventFeedbacksDetailsDto);
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            var feedbacks = eventFeedbacksDetailsDto.Skip(skipNumber).Take(query.PageSize).ToList();
+
+            return StatusCode((int)HttpStatusCode.OK, new {
+                feedbacks = feedbacks,
+                feedbacks_count = feedbacks.Count(),
+                pagesize = query.PageSize
+
+            } );
         }
 
 
@@ -411,6 +514,24 @@ namespace backend.Controllers
 
             return StatusCode((int)HttpStatusCode.OK, dashboardData); 
             
+        }
+
+
+        [HttpGet("list/transactions")]
+        [Authorize]
+        [Authorize(Policy = "IsAdmin")]
+        [ProducesResponseType(typeof(MessageResponse), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ListTransactions([FromQuery] AdminTransactionQuery query){
+           var transactions = await _adminRepo.AdminListTransactionAsync(query);
+
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            var paginatedTransactions = transactions.Skip(skipNumber).Take(query.PageSize).ToList();
+            return StatusCode((int)HttpStatusCode.OK, new {
+                transactions = paginatedTransactions,
+                transactions_count = paginatedTransactions.Count(),
+                pagesize = query.PageSize
+
+            } );
         }
 
 

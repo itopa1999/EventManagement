@@ -352,14 +352,22 @@ namespace backend.AdminRepository
 
         }
 
-        public async Task<List<AdminListOrganizerDto>?> AdminListOrganizerAsync()
+        public async Task<List<AdminListOrganizerDto>?> AdminListOrganizerAsync(AdminSearchQuery query)
         {
-            var organizers = await _userManager.Users
+            var organizers =  _userManager.Users
             .Where(x=>x.UserType != UserType.Admin)
-            .Select(x=>x.ToAdminListOrganizerDto())
-            .ToListAsync();
+            .AsQueryable();
+            if(!string.IsNullOrWhiteSpace(query.Search))
+            {
+                organizers = organizers.Where(x=>x.FirstName.Contains(query.Search)
+                || x.Email.Contains(query.Search)
+                || x.UserName.Contains(query.Search)
+                || x.Id.ToString().Contains(query.Search));
+            };
 
-            return organizers;
+            var organizersDto = await organizers.Select(x=>x.ToAdminListOrganizerDto()).ToListAsync();
+
+            return organizersDto;
 
         }
 
@@ -424,7 +432,6 @@ namespace backend.AdminRepository
 
             var eventDtos = events
                 .Select(x => x.ToAdminOrganizerEventListDto(request));
-            Console.WriteLine(events.Count());
             
 
             return await eventDtos.ToListAsync();
@@ -449,27 +456,42 @@ namespace backend.AdminRepository
         }
 
 
-        public async Task<(List<AdminEventAttendeeListDto>? attendeeListDto, bool IsSuccess)> AdminGetEventAttendeeDetailsAsync(int id)
+        public async Task<(List<AdminEventAttendeeListDto>? attendeeListDto, bool IsSuccess)> AdminGetEventAttendeeDetailsAsync(int id,AdminSearchQuery query)
         {
             if (!await id.IsValidEventAdmin(_context))
                 return (null, false);
-            var attendees =await _context.Attendees
+            var attendees = _context.Attendees
             .Where(x=>x.EventId == id)
-            .ToListAsync();
+            .AsQueryable();
+            if(!string.IsNullOrWhiteSpace(query.Search))
+            {
+                attendees = attendees.Where(x=>x.FirstName.Contains(query.Search)
+                || x.Email.Contains(query.Search)
+                || x.PhoneNumber.Contains(query.Search)
+                || x.RegisteredAt.ToString().Contains(query.Search));
+            };
 
             var attendeesDto = attendees?.Select(x=>x.ToAdminEventAttendeeListDto()).ToList();
 
             return (attendeesDto, true);
         }
 
-        public async Task<(List<AdminEventTicketListDto>? ticketListDto, bool IsSuccess)> AdminGetEventTicketDetailsAsync(int id)
+        public async Task<(List<AdminEventTicketListDto>? ticketListDto, bool IsSuccess)> AdminGetEventTicketDetailsAsync(int id,AdminSearchQuery query)
         {
             if (!await id.IsValidEventAdmin(_context))
                 return (null, false);
-            var tickets =await _context.Tickets
+            var tickets = _context.Tickets
             .Include(x=>x.Attendee)
             .Where(x=>x.Attendee.EventId == id)
-            .ToListAsync();
+            .AsQueryable();
+
+            if(!string.IsNullOrWhiteSpace(query.Search))
+            {
+                tickets = tickets.Where(x=>x.Attendee.Email.Contains(query.Search)
+                || x.Attendee.FirstName.Contains(query.Search)
+                // || x.createdAt.Contains(query.Search)
+                );
+            };
 
             var ticketsDto = tickets?.Select(x=>x.ToAdminEventTicketListDto()).ToList();
 
@@ -477,27 +499,42 @@ namespace backend.AdminRepository
             
         }
 
-        public async Task<(List<AdminEventPaymentListDto>? paymentListDto, bool IsSuccess)> AdminGetEventPaymentDetailsAsync(int id)
+        public async Task<(List<AdminEventPaymentListDto>? paymentListDto, bool IsSuccess)> AdminGetEventPaymentDetailsAsync(int id,AdminSearchQuery query)
         {
             if (!await id.IsValidEventAdmin(_context))
                 return (null, false);
-            var payments =await _context.Payments
+            var payments = _context.Payments
             
             .Where(x=>x.EventId == id)
-            .ToListAsync();
+            .Include(x=>x.Ticket)
+                .ThenInclude(x=>x.Attendee)
+            .AsQueryable();
+            if(!string.IsNullOrWhiteSpace(query.Search))
+            {
+                payments = payments.Where(x=>x.Ticket.Attendee.Email.Contains(query.Search)
+                || x.Amount.ToString().Contains(query.Search)
+                || x.TransactionId.ToString().Contains(query.Search)
+                || x.PaymentDate.ToString().Contains(query.Search));
+            };
 
             var paymentsDto = payments?.Select(x=>x.ToAdminEventPaymentListDto()).ToList();
 
             return (paymentsDto, true);
         }
 
-        public async Task<(List<AdminEventFeedbackListDto>? feedbackListDto, bool IsSuccess)> AdminGetEventRatingDetailsAsync(int id)
+        public async Task<(List<AdminEventFeedbackListDto>? feedbackListDto, bool IsSuccess)> AdminGetEventRatingDetailsAsync(int id,AdminSearchQuery query)
         {
             if (!await id.IsValidEventAdmin(_context))
                 return (null, false);
-            var feedbacks =await _context.Feedbacks
+            var feedbacks = _context.Feedbacks
             .Where(x=>x.EventId == id)
-            .ToListAsync();
+            .AsQueryable();
+            if(!string.IsNullOrWhiteSpace(query.Search))
+            {
+                feedbacks = feedbacks.Where(x=>x.AttendeeEmail.Contains(query.Search)
+                || x.Comments.Contains(query.Search)
+                || x.SubmittedAt.ToString().Contains(query.Search));
+            };
 
             var feedbacksDto = feedbacks?.Select(x=>x.ToAdminEventFeedbackListDto()).ToList();
 
@@ -505,13 +542,22 @@ namespace backend.AdminRepository
         }
 
 
-        public async Task<(List<AdminEventInvitationListDto>? invitationListDto, bool IsSuccess)> AdminGetEventIvDetailsAsync(int id)
+        public async Task<(List<AdminEventInvitationListDto>? invitationListDto, bool IsSuccess)> AdminGetEventIvDetailsAsync(int id,AdminSearchQuery query)
         {
             if (!await id.IsValidEventAdmin(_context))
                 return (null, false);
-            var invitations =await _context.Invitations
+            var invitations = _context.Invitations
             .Where(x=>x.EventId == id)
-            .ToListAsync();
+            .AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Search))
+            {
+                invitations = invitations.Where(x =>
+                    x.AttendeeEmail.Contains(query.Search) || 
+                    // x.Status.Equals(query.Search) || 
+                    x.SentAt.ToString().Contains(query.Search)
+                );
+            }
+
 
             var invitationDto = invitations?.Select(x=>x.ToAdminEventInvitationListDto()).ToList();
 
@@ -519,6 +565,81 @@ namespace backend.AdminRepository
 
             
         }
+
+        public async Task<List<AdminListAttendeeDto>?> AdminListEventsAttendeesAsync(AdminSearchQuery query)
+        {
+            var attendees =  _context.Attendees
+            .ToList()
+            .GroupBy(x => x.Email)
+            .Select(g => g.First());
+            if(!string.IsNullOrWhiteSpace(query.Search))
+            {
+                attendees = attendees.Where(x=>x.FirstName.Contains(query.Search)
+                || x.Email.Contains(query.Search)
+                || x.LastName.Contains(query.Search)
+                || x.Id.ToString().Contains(query.Search));
+            };
+
+            var attendeesDto = attendees.Select(x=>x.ToAdminListAttendeeDtoDto()).ToList();
+
+            return attendeesDto;
+        }
+
+        public async Task<List<AdminListOrganizersWalletDto>?> AdminListOrganizersWalletAsync(AdminSearchQuery query)
+        {
+            var wallets =  _context.Wallets
+            .Include(x=>x.User)
+            .AsQueryable();
+            if(!string.IsNullOrWhiteSpace(query.Search))
+            {
+                wallets = wallets.Where(x=>x.User.FirstName.Contains(query.Search)
+                || x.User.Email.Contains(query.Search)
+                || x.User.LastName.Contains(query.Search)
+                || x.Balance.ToString().Contains(query.Search));
+            };
+
+            var walletsDto = await wallets.Select(x=>x.ToAdminListOrganizersWalletDto()).ToListAsync();
+
+            return walletsDto;
+        }
+
+
+        public async Task<List<AdminListTransactionDto>?> AdminListTransactionAsync(AdminTransactionQuery query)
+        {
+            var transactions = _context.Transactions
+            .Include(x=>x.User)
+            .OrderByDescending(x=>x.Date)
+            .AsQueryable();
+            
+            if(!string.IsNullOrWhiteSpace(query.Search))
+            {
+                transactions = transactions.Where(x=>x.User.UserName.Contains(query.Search)
+                || x.User.Email.Contains(query.Search)
+                || x.User.FirstName.Contains(query.Search)
+                || x.User.LastName.Contains(query.Search)
+                || x.Id.ToString().Contains(query.Search));
+            };
+
+            if (query.StartDate > DateTime.MinValue)
+            {
+                Console.WriteLine($"StartDate Filter: {query.StartDate}");
+                transactions = transactions.Where(x => x.Date >= query.StartDate);
+            }
+
+            if (query.EndDate > DateTime.MinValue)
+            {
+                Console.WriteLine($"EndDate Filter: {query.EndDate}");
+                transactions = transactions.Where(x => x.Date <= query.EndDate); // Use <= for end date comparison.
+            }
+
+            var transactionsDtos = transactions
+                .Select(x => x.ToAdminListTransactionDto());
+            
+
+            return await transactionsDtos.ToListAsync();
+        }
+
+
 
     
     }

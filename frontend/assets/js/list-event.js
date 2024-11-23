@@ -167,6 +167,9 @@ document.addEventListener('DOMContentLoaded', function() {
             prevPageButton.style.display = 'block'; // Remove class to enable
         }
       }
+
+
+      
       fetchEvents();
 
 

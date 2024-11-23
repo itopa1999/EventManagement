@@ -17,6 +17,7 @@ namespace backend.Mappers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 UserType = user.UserType.ToString(),
+                IsBlock = user.IsBlock
             };
         }
 
@@ -31,7 +32,8 @@ namespace backend.Mappers
                 StartDate = listEvent.StartDate,
                 EndDate = listEvent.EndDate,
                 Description = listEvent.Description,
-                ImagePath = $"{request.Scheme}://{request.Host}{listEvent.ImagePath}"
+                ImagePath = $"{request.Scheme}://{request.Host}{listEvent.ImagePath}",
+                IsBlock = listEvent.IsBlock
             };
         }
 
@@ -151,6 +153,7 @@ namespace backend.Mappers
                 Method = payment.Method.ToString(),
                 Status = payment.Status.ToString(),
                 TicketId = payment.TicketId,
+                PayerEmail = payment?.Ticket?.Attendee?.Email,
                 TransactionId = payment.TransactionId,
 
             };
@@ -168,10 +171,54 @@ namespace backend.Mappers
             };
         }
 
+        
+        public static AdminListAttendeeDto ToAdminListAttendeeDtoDto(this Attendee attendee){
+            return new AdminListAttendeeDto {
+                Id = attendee.Id,
+                FirstName = attendee.FirstName,
+                LastName = attendee.LastName,
+                Email = attendee.Email,
+                IsBlock = attendee.IsBlock,
+
+            };
+        }
+
+
+        public static AdminListOrganizersWalletDto ToAdminListOrganizersWalletDto(this Wallet wallet){
+            return new AdminListOrganizersWalletDto {
+                Id = wallet.Id,
+                UserId = wallet?.User?.Id,
+                FirstName = wallet?.User?.FirstName,
+                LastName = wallet?.User?.LastName,
+                Email = wallet?.User?.Email,
+                Username = wallet?.User?.UserName,
+                Balance = wallet.Balance,
+                IsBlock = wallet.IsBlock,
+
+            };
+        }
 
 
 
+        public static AdminListTransactionDto ToAdminListTransactionDto(this Transaction transaction){
+            return new AdminListTransactionDto {
+                Id = transaction.Id,
+                UserId = transaction?.User?.Id,
+                FirstName = transaction?.User?.FirstName,
+                LastName = transaction?.User?.LastName,
+                Email = transaction?.User?.Email,
+                Username = transaction?.User?.UserName,
+                Amount = transaction.Amount,
+                Description = transaction.Description,
+                Ref = transaction.Ref,
+                Type = transaction.Type.ToString(),
+                Date = transaction.Date,
 
+            };
+        }
+
+        
+    
 
 
 

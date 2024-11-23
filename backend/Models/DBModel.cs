@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using backend.Helpers;
 using Microsoft.AspNetCore.Identity;
 
@@ -219,6 +215,7 @@ namespace backend.Models
         public string? Ref { get; set; }
         public TransactionType Type { get; set; }
         public DateTime Date { get; set; }
+        public User? User { get; set; }
 
     }
 
