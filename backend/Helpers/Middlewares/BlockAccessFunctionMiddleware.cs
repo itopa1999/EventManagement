@@ -51,11 +51,7 @@ namespace backend.Helpers
             // {
             //     blockAccessDto.Events.Add(new EventAccessDto { eventId = 0 });
             // }
-            var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId != null)
-            {
-                blockAccessDto.Users.Add(new OrganizerAccessDto { userId = userId });
-            }
+            
             // else
             // {
             //     blockAccessDto.Users.Add(new OrganizerAccessDto { userId = "frsaer-453434" });

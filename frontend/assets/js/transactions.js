@@ -77,18 +77,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     data.transactions.forEach((transaction, index) => {
                         const rowHtml = `
-                            <tr class="details-btn" 
+                            <tr class="details-btn"
                             id="details-${transaction.id}"
-                            id="details-${transaction.id}"
-                            id="details-${transaction.id}"
-                            id="details-${transaction.id}"
-                            id="details-${transaction.id}"
-                            id="details-${transaction.id}"
-                            id="details-${transaction.id}"
-                            id="details-${transaction.id}">
-                            id="details-${transaction.id}"
-                            id="details-${transaction.id}"
-                            id="details-${transaction.id}"
+                            FirstName="${transaction.firstName}"
+                            LastName="${transaction.lastName}"
+                            Email="${transaction.email}"
+                            Username="${transaction.username}"
+                            Amount="${formatCurrency(transaction.amount)}"
+                            Description="${transaction.description}"
+                            Ref="${transaction.ref}"
+                            Type="${transaction.type}"
+                            Date="${new Date (transaction.date).toLocaleString()}">
                                 <td>${transaction.id}</td>
                                 <td>${transaction.username}</td>
                                 <td>${formatCurrency(transaction.amount)}</td>
@@ -101,8 +100,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 document.querySelectorAll('.details-btn').forEach(button => {
                     button.addEventListener('click', function () {
-                        const transactionId = this.id.replace('details-', '');
-                        alert(transactionId);
+                        document.getElementById("transaction-id").innerHTML = this.id.replace('details-', '');
+                        document.getElementById("transaction-fname").innerHTML = this.getAttribute('FirstName');
+                        document.getElementById("transaction-lname").innerHTML = this.getAttribute('LastName');
+                        document.getElementById("transaction-email").innerHTML = this.getAttribute('Email');
+                        document.getElementById("transaction-uname").innerHTML = this.getAttribute('Username');
+                        document.getElementById("transaction-amount").innerHTML = this.getAttribute('Amount');
+                        document.getElementById("transaction-desc").innerHTML = this.getAttribute('Description');
+                        document.getElementById("transaction-ref").innerHTML = this.getAttribute('Ref');
+                        document.getElementById("transaction-type").innerHTML = this.getAttribute('Type');
+                        document.getElementById("transaction-date").innerHTML = this.getAttribute('Date');
                     });
                 });
                 

@@ -53,8 +53,9 @@ namespace backend.Helpers
 
     public enum TransactionType
     {
-        debit,
-        credit
+        
+        credit,
+        debit
     }
 
     public enum BuyTicketCondition

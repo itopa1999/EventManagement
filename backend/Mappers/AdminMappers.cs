@@ -213,6 +213,7 @@ namespace backend.Mappers
                 Ref = transaction.Ref,
                 Type = transaction.Type.ToString(),
                 Date = transaction.Date,
+                
 
             };
         }
